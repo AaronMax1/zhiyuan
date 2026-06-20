@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>高考志愿助手</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <aside>
+    <h1>高考志愿助手</h1>
+    <form id="form">
+      <label>省份
+        <select name="province">
+          <option value="北京">北京</option>
+          <option value="天津">天津</option>
+          <option value="河北" selected>河北</option>
+          <option value="山西">山西</option>
+          <option value="内蒙古">内蒙古</option>
+          <option value="辽宁">辽宁</option>
+          <option value="吉林">吉林</option>
+          <option value="黑龙江">黑龙江</option>
+          <option value="上海">上海</option>
+          <option value="江苏">江苏</option>
+          <option value="浙江">浙江</option>
+          <option value="安徽">安徽</option>
+          <option value="福建">福建</option>
+          <option value="江西">江西</option>
+          <option value="山东">山东</option>
+          <option value="河南">河南</option>
+          <option value="湖北">湖北</option>
+          <option value="湖南">湖南</option>
+          <option value="广东">广东</option>
+          <option value="广西">广西</option>
+          <option value="海南">海南</option>
+          <option value="重庆">重庆</option>
+          <option value="四川">四川</option>
+          <option value="贵州">贵州</option>
+          <option value="云南">云南</option>
+          <option value="西藏">西藏</option>
+          <option value="陕西">陕西</option>
+          <option value="甘肃">甘肃</option>
+          <option value="青海">青海</option>
+          <option value="宁夏">宁夏</option>
+          <option value="新疆">新疆</option>
+        </select>
+      </label>
+      <label>层次
+        <select name="education_level">
+          <option value="本科" selected>本科</option>
+          <option value="专科">专科</option>
+          <option value="">不限</option>
+        </select>
+      </label>
+      <label>选科大类
+        <select name="category">
+          <option value="不限">全部科类（文科+理科/物理+历史）</option>
+          <option value="理科" selected>理科大类（理科/物理类）</option>
+          <option value="文科">文科大类（文科/历史类）</option>
+        </select>
+      </label>
+      <label>分数<input name="score" value="655"></label>
+      <label>位次<input name="rank" value="10500"></label>
+      <label>核心诉求
+        <select name="goal">
+          <option value="就业优先" selected>就业优先</option>
+          <option value="稳定/考公优先">稳定/考公优先</option>
+          <option value="深造优先">继续深造优先</option>
+          <option value="学校层次优先">学校层次优先</option>
+          <option value="城市优先">城市优先</option>
+        </select>
+      </label>
+      <label>专业关键词<input name="major_keywords" value="计算机,电子"></label>
+      <label>城市偏好<input name="preferred_cities" value="杭州,南京,上海"></label>
+      <label>家庭资源<input name="family" placeholder="例如：普通家庭 / 父母在电力系统 / 医疗资源"></label>
+      <label>限制条件<input name="constraints" placeholder="例如：色弱 / 不接受民办 / 学费预算"></label>
+      <label>最大志愿数<input name="max_slots" value="30"></label>
+      <label>推荐引擎
+        <select name="engine_mode">
+          <option value="unified" selected>统一录取库</option>
+          <option value="advisor">gaokao-advisor 高级引擎</option>
+        </select>
+      </label>
+      <button type="submit">生成方案</button>
+    </form>
+    <section class="llm-config">
+      <h2>AI 配置</h2>
+      <label>Base URL<input id="llm-base-url" placeholder="在这里填写服务地址"></label>
+      <label>Model<input id="llm-model" placeholder="在这里填写模型名称"></label>
+      <label>Key<input id="llm-key" type="password" placeholder="只保存在当前浏览器"></label>
+      <label>Timeout 秒<input id="llm-timeout" value="60"></label>
+      <button type="button" id="save-llm">保存 AI 配置</button>
+      <p class="muted">Base URL、Model、Key 只保存在浏览器 localStorage，请求时临时发送给后端，不写入代码或数据库。</p>
+    </section>
+    <div id="health"></div>
+  </aside>
+  <main>
+    <section>
+      <h2>六步进度</h2>
+      <div id="steps" class="steps"></div>
+      <div id="step-detail" class="step-detail"></div>
+    </section>
+  </main>
+  <script src="/main.js"></script>
+</body>
+</html>

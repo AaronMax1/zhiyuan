@@ -1,0 +1,1192 @@
+{
+  "version": 1,
+  "description": "Official gaokao source registry. Article pages are parsed for downloadable attachments.",
+  "sources": [
+    {
+      "id": "sd-2025-regular-batch-1",
+      "province": "山东",
+      "year": 2025,
+      "category": "综合",
+      "batch": "普通类常规批第1次志愿",
+      "source_type": "official_admission",
+      "publisher": "山东省教育招生考试院",
+      "page_url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=6996",
+      "attachment_urls": [
+        "https://www.sdzk.cn/Floadup/file/20250719/6388855130412530367357143.xls"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "sd-2025-regular-batch-2",
+      "province": "山东",
+      "year": 2025,
+      "category": "综合",
+      "batch": "普通类常规批第2次志愿",
+      "source_type": "official_admission",
+      "publisher": "山东省教育招生考试院",
+      "page_url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7010",
+      "attachment_urls": [
+        "https://www.sdzk.cn/Floadup/file/20250728/6388931521217170972235326.xls"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "sd-2025-regular-batch-3",
+      "province": "山东",
+      "year": 2025,
+      "category": "综合",
+      "batch": "普通类常规批第3次志愿",
+      "source_type": "official_admission",
+      "publisher": "山东省教育招生考试院",
+      "page_url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7019",
+      "attachment_urls": [
+        "https://www.sdzk.cn/Floadup/file/20250801/6388966818220240355336033.xls"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "hebei-2025-undergraduate-regular",
+      "province": "河北",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "本科批平行志愿投档情况统计",
+      "source_type": "official_admission",
+      "publisher": "河北省教育考试院",
+      "page_url": "https://www.hebeea.edu.cn/c/2025-07-23/489213.html",
+      "attachment_urls": [
+        "https://file.hebeea.edu.cn/files/article/2025/07/20250722214851_332.xlsx",
+        "https://file.hebeea.edu.cn/files/article/2025/07/20250722214852_210.xlsx"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "hebei-2025-specialist-regular",
+      "province": "河北",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "专科批平行志愿投档情况统计",
+      "source_type": "official_admission",
+      "publisher": "河北省教育考试院",
+      "page_url": "https://www.hebeea.edu.cn/c/2025-08-11/489215.html",
+      "attachment_urls": [
+        "https://file.hebeea.edu.cn/files/article/2025/08/20250810202647_792.xlsx",
+        "https://file.hebeea.edu.cn/files/article/2025/08/20250810202648_213.xlsx"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "liaoning-2025-undergraduate-regular",
+      "province": "辽宁",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "本科批投档最低分",
+      "source_type": "official_admission",
+      "publisher": "辽宁招生考试之窗",
+      "page_url": "https://www.lnzsks.com/newsinfo/IMS_20250720_45051_8gfnOHDWBK.htm",
+      "attachment_urls": [
+        "https://www.lnzsks.com/lnzkbfiles/2025/2025gklqfsxbkdiedcpade0720w.xlsx",
+        "https://www.lnzsks.com/lnzkbfiles/2025/2025gklqfsxbksidecpfrf0720l.xlsx"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "liaoning-2025-specialist-regular",
+      "province": "辽宁",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "高职（专科）批投档最低分",
+      "source_type": "official_admission",
+      "publisher": "辽宁招生考试之窗",
+      "page_url": "https://www.lnzsks.com/newsinfo/IMS_20250808_45093_7pLmWuaEc0.htm",
+      "attachment_urls": [
+        "https://www.lnzsks.com/lnzkbfiles/2025/2025gklqzkzdf0808w.xlsx",
+        "https://www.lnzsks.com/lnzkbfiles/2025/2025gklqzkzdf0808l.xlsx"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "liaoning-2024-undergraduate-regular",
+      "province": "辽宁",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "本科批投档最低分",
+      "source_type": "official_admission",
+      "publisher": "辽宁招生考试之窗",
+      "page_url": "https://www.lnzsks.com/newsinfo/IMS_20240720_44109_OymtAPK6ag.htm",
+      "attachment_urls": [
+        "https://www.lnzsks.com/lnzkbfiles/2024/2024gkbkptdxosiexie01w.zip",
+        "https://www.lnzsks.com/lnzkbfiles/2024/2024gkbktdxsiexieft02l.zip"
+      ],
+      "license_note": "official public notice; 2024 attachments are zip; verify reuse policy before redistribution"
+    },
+    {
+      "id": "liaoning-2024-specialist-regular",
+      "province": "辽宁",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "高职（专科）批投档最低分",
+      "source_type": "official_admission",
+      "publisher": "辽宁招生考试之窗",
+      "page_url": "https://www.lnzsks.com/newsinfo/IMS_20240808_44210_JAoMQPwVut.htm",
+      "attachment_urls": [
+        "https://www.lnzsks.com/lnzkbfiles/2024/20240808ptzkDLlsk.zip",
+        "https://www.lnzsks.com/lnzkbfiles/2024/20240808ptzkDLwk.zip"
+      ],
+      "license_note": "official public notice; 2024 attachments are zip; verify reuse policy before redistribution"
+    },
+    {
+      "id": "cq-2025-ordinary-undergraduate-parallel",
+      "province": "重庆",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "本科批-平行志愿",
+      "source_type": "official_admission",
+      "publisher": "重庆市教育考试院",
+      "page_url": "https://www.cqksy.cn/web/column/col1846541.html",
+      "attachment_urls": [
+        "https://www.cqksy.cn/uploadFile/infopub/202507/1947199599647662080.pdf?fileName=2025xxb-Bkp_LSPx0721.pdf&fileSize=446211",
+        "https://www.cqksy.cn/uploadFile/infopub/202507/1947199748985856000.pdf?fileName=2025xxb-Bkp_WLPx0721.pdf&fileSize=1033364"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "cq-2025-ordinary-specialist-parallel",
+      "province": "重庆",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "高职专科批-平行志愿",
+      "source_type": "official_admission",
+      "publisher": "重庆市教育考试院",
+      "page_url": "https://www.cqksy.cn/web/column/col1846541.html",
+      "attachment_urls": [
+        "https://www.cqksy.cn/uploadFile/infopub/202508/1952641164096577536.pdf?fileName=2025xxb-GZZkP_LSPX0805.pdf&fileSize=399207",
+        "https://www.cqksy.cn/uploadFile/infopub/202508/1952641414559440896.pdf?fileName=2025xxb-GZZkP_WLPX0805.pdf&fileSize=467177"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "yn-2024-ordinary-admission-daily",
+      "province": "云南",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "普通高校招生录取日报",
+      "source_type": "official_admission",
+      "publisher": "云南省招生考试院/云南省招考频道",
+      "page_url": "https://www.ynzs.cn/html/content/6019.html",
+      "attachment_urls": [
+        "https://www.ynzs.cn/upload/files/2024/7/77ca1580e8c8b580.pdf",
+        "https://www.ynzs.cn/upload/files/2024/7/87e5bd66d9f2f0c1.pdf",
+        "https://www.ynzs.cn/upload/files/2024/7/86dfaca6905584f1.pdf",
+        "https://www.ynzs.cn/upload/files/2024/7/8bc0ffe402f70029.pdf",
+        "https://www.ynzs.cn/upload/files/2024/7/fd7db2563bbe935d.pdf",
+        "https://www.ynzs.cn/upload/files/2024/7/ce0b3bafa900530e.pdf",
+        "https://www.ynzs.cn/upload/files/2024/7/88ecc9d933ad0718.pdf",
+        "https://www.ynzs.cn/upload/files/2024/7/ec842f19a77fd328.pdf",
+        "https://www.ynzs.cn/upload/files/2024/8/3116abe799c14ae6.pdf",
+        "https://www.ynzs.cn/upload/files/2024/8/3f6947ba485c6c6.pdf"
+      ],
+      "license_note": "official public notice; this may be partial daily report list; verify completeness before redistribution"
+    },
+    {
+      "id": "shanghai-2025-undergrad-regular-parallel",
+      "province": "上海",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "本科普通批次平行志愿",
+      "source_type": "official_admission",
+      "publisher": "上海市教育考试院",
+      "page_url": "https://www.shmeea.edu.cn/page/08000/index_22.html",
+      "attachment_urls": [
+        "https://www.shmeea.edu.cn/download/20250719/186.pdf",
+        "https://www.shmeea.edu.cn/download/20250719/185.pdf"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "shanghai-2025-specialist-regular",
+      "province": "上海",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "专科普通批次",
+      "source_type": "official_admission",
+      "publisher": "上海市教育考试院",
+      "page_url": "https://www.shmeea.edu.cn/page/08000/index_20.html",
+      "attachment_urls": [
+        "https://www.shmeea.edu.cn/download/20250801/3.pdf"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "shanghai-2024-undergrad-regular-parallel",
+      "province": "上海",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "本科普通批次平行志愿",
+      "source_type": "official_admission",
+      "publisher": "上海市教育考试院",
+      "page_url": "https://www.shmeea.edu.cn/page/08000/index_53.html",
+      "attachment_urls": [
+        "https://www.shmeea.edu.cn/download/20240719/198.pdf",
+        "https://www.shmeea.edu.cn/download/20240719/197.pdf"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "shanghai-2024-specialist-regular-parallel",
+      "province": "上海",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "专科普通批次平行志愿",
+      "source_type": "official_admission",
+      "publisher": "上海市教育考试院",
+      "page_url": "https://www.shmeea.edu.cn/page/08000/index_51.html",
+      "attachment_urls": [
+        "https://www.shmeea.edu.cn/download/20240730/219.pdf"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "jiangsu-2025-undergrad-regular-history",
+      "province": "江苏",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "本科批次平行志愿（历史等科目类）",
+      "source_type": "official_admission",
+      "publisher": "江苏省教育考试院",
+      "page_url": "https://www.jseea.cn/webfile/index/index_zkxx/2025-07-18/7351781284785426432.html",
+      "attachment_urls": [
+        "https://www.jseea.cn/webfile/upload/2025/07-18/09-33-380724-1917118608.pdf"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "jiangsu-2025-undergrad-regular-physics",
+      "province": "江苏",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "本科批次平行志愿（物理等科目类）",
+      "source_type": "official_admission",
+      "publisher": "江苏省教育考试院",
+      "page_url": "https://www.jseea.cn/webfile/index/index_zkxx/2025-07-18/7351781448019349504.html",
+      "attachment_urls": [
+        "https://www.jseea.cn/webfile/upload/2025/07-18/09-33-5302461102655621.pdf"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "jiangsu-2025-specialist-regular-history",
+      "province": "江苏",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "专科批次平行志愿（历史等科目类）",
+      "source_type": "official_admission",
+      "publisher": "江苏省教育考试院",
+      "page_url": "https://www.jseea.cn/webfile/index/index_zkxx/2025-07-31/7356609083685736448.html",
+      "attachment_urls": [
+        "https://www.jseea.cn/webfile/upload/2025/07-31/16-57-3603711634272701.pdf"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "jiangsu-2025-specialist-regular-physics",
+      "province": "江苏",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "专科批次平行志愿（物理等科目类）",
+      "source_type": "official_admission",
+      "publisher": "江苏省教育考试院",
+      "page_url": "https://www.jseea.cn/webfile/index/index_zkxx/2025-07-31/7356611326715629568.html",
+      "attachment_urls": [
+        "https://www.jseea.cn/webfile/upload/2025/07-31/17-06-410510-768196706.pdf"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "jiangsu-2024-undergrad-regular",
+      "province": "江苏",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "本科批次平行志愿",
+      "source_type": "official_admission",
+      "publisher": "江苏省教育考试院",
+      "page_url": "https://www.jseea.cn/webfile/index/index_zkxx/2024-07-18/7219509116052443136.html",
+      "attachment_urls": [
+        "https://www.jseea.cn/webfile/upload/2024/07-18/09-11-430408314109108.xls",
+        "https://www.jseea.cn/webfile/upload/2024/07-18/11-00-490856-746889704.xls"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "jiangsu-2024-specialist-regular-history",
+      "province": "江苏",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "专科批次平行志愿（历史等科目类）",
+      "source_type": "official_admission",
+      "publisher": "江苏省教育考试院",
+      "page_url": "https://www.jseea.cn/webfile/index/index_zkxx/2024-08-01/7224590298951716864.html",
+      "attachment_urls": [
+        "https://www.jseea.cn/webfile/upload/2024/08-01/09-42-320064379349473.xls"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "jiangsu-2024-specialist-regular-physics",
+      "province": "江苏",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "专科批次平行志愿（物理等科目类）",
+      "source_type": "official_admission",
+      "publisher": "江苏省教育考试院",
+      "page_url": "https://www.jseea.cn/webfile/index/index_zkxx/2024-08-01/7224590636605771776.html",
+      "attachment_urls": [
+        "https://www.jseea.cn/webfile/upload/2024/08-01/09-43-3605232104041184.xls"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "zhejiang-2025-regular-second-segment",
+      "province": "浙江",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "普通类第二段平行投档",
+      "source_type": "official_admission",
+      "publisher": "浙江省教育考试院",
+      "page_url": "https://www.zjzs.net/art/2025/7/30/art_155_11489.html",
+      "attachment_urls": [
+        "https://www.zjzs.net/module/download/downfile.jsp?classid=0&showname=%E6%B5%99%E6%B1%9F%E7%9C%812025%E5%B9%B4%E6%99%AE%E9%80%9A%E9%AB%98%E6%A0%A1%E6%8B%9B%E7%94%9F%E6%99%AE%E9%80%9A%E7%B1%BB%E7%AC%AC%E4%BA%8C%E6%AE%B5%E5%B9%B3%E8%A1%8C%E6%8A%95%E6%A1%A3%E5%88%86%E6%95%B0%E7%BA%BF.XLS&filename=ba3d7d5ee3814ed0b2b926715a9d09f8.xls"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "guangdong-2025-undergraduate-ordinary",
+      "province": "广东",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "本科批次正式投档",
+      "source_type": "official_admission",
+      "publisher": "广东省教育考试院",
+      "page_url": "https://eea.gd.gov.cn/ptgk/content/post_4746781.html",
+      "attachment_urls": [
+        "https://eea.gd.gov.cn/attachment/0/585/585885/4746781.pdf",
+        "https://eea.gd.gov.cn/attachment/0/585/585886/4746781.pdf",
+        "https://eea.gd.gov.cn/attachment/0/585/585887/4746781.pdf",
+        "https://eea.gd.gov.cn/attachment/0/585/585888/4746781.pdf",
+        "https://eea.gd.gov.cn/attachment/0/585/585889/4746781.pdf",
+        "https://eea.gd.gov.cn/attachment/0/585/585890/4746781.pdf",
+        "https://eea.gd.gov.cn/attachment/0/585/585891/4746781.pdf",
+        "https://eea.gd.gov.cn/attachment/0/585/585892/4746781.pdf",
+        "https://eea.gd.gov.cn/attachment/0/585/585893/4746781.pdf"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "guangdong-2025-specialty-ordinary",
+      "province": "广东",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "专科批次正式投档",
+      "source_type": "official_admission",
+      "publisher": "广东省教育考试院",
+      "page_url": "https://eea.gd.gov.cn/ptgk/content/post_4754637.html",
+      "attachment_urls": [
+        "https://eea.gd.gov.cn/attachment/0/587/587545/4754637.pdf",
+        "https://eea.gd.gov.cn/attachment/0/587/587546/4754637.pdf",
+        "https://eea.gd.gov.cn/attachment/0/587/587547/4754637.pdf",
+        "https://eea.gd.gov.cn/attachment/0/587/587548/4754637.pdf",
+        "https://eea.gd.gov.cn/attachment/0/587/587549/4754637.pdf",
+        "https://eea.gd.gov.cn/attachment/0/587/587550/4754637.pdf",
+        "https://eea.gd.gov.cn/attachment/0/587/587551/4754637.pdf",
+        "https://eea.gd.gov.cn/attachment/0/587/587552/4754637.pdf",
+        "https://eea.gd.gov.cn/attachment/0/587/587553/4754637.pdf",
+        "https://eea.gd.gov.cn/attachment/0/587/587554/4754637.pdf"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "guangdong-2024-undergraduate-ordinary",
+      "province": "广东",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "本科批次正式投档",
+      "source_type": "official_admission",
+      "publisher": "广东省教育考试院",
+      "page_url": "https://eea.gd.gov.cn/ptgk/content/post_4458330.html",
+      "attachment_urls": [
+        "https://eea.gd.gov.cn/attachment/0/554/554636/4458330.zip"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "hubei-2025-undergraduate-ordinary",
+      "province": "湖北",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "本科普通批平行志愿投档线",
+      "source_type": "official_image_page",
+      "publisher": "湖北省招办/湖北招生信息综合服务平台",
+      "page_url": "https://zsxx.e21.cn/#/MsgDetails?articleColumn=szb&id=3609",
+      "image_api_url": "https://zsxx.e21.cn/hb-zsw-admin/public/news-article/3609",
+      "attachment_urls": [],
+      "license_note": "official public image article; OCR required"
+    },
+    {
+      "id": "hubei-2025-specialty-ordinary",
+      "province": "湖北",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "高职高专普通批平行志愿投档线",
+      "source_type": "official_image_page",
+      "publisher": "湖北省招办/湖北招生信息综合服务平台",
+      "page_url": "https://zsxx.e21.cn/#/MsgDetails?articleColumn=szb&id=3712",
+      "image_api_url": "https://zsxx.e21.cn/hb-zsw-admin/public/news-article/3712",
+      "attachment_urls": [],
+      "license_note": "official public image article; OCR required"
+    },
+    {
+      "id": "hunan-2025-undergraduate-ordinary",
+      "province": "湖南",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "本科批投档分数线",
+      "source_type": "official_page",
+      "publisher": "湖南招生考试信息港",
+      "page_url": "https://www.hneeb.cn/hnxxg/741/742/content_4472.html",
+      "attachment_urls": [
+        "https://src.hneao.cn/hnxxg/741/742/2025072001.xlsx"
+      ],
+      "license_note": "official public page"
+    },
+    {
+      "id": "hunan-2025-specialty-ordinary",
+      "province": "湖南",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "高职专科批投档分数线",
+      "source_type": "official_page",
+      "publisher": "湖南招生考试信息港",
+      "page_url": "https://www.hneeb.cn/hnxxg/741/742/content_4505.html",
+      "attachment_urls": [
+        "https://www.hneeb.cn/hnxxg/741/742/2025080801.xlsx"
+      ],
+      "license_note": "official public page"
+    },
+    {
+      "id": "hunan-2024-undergraduate-ordinary",
+      "province": "湖南",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "本科批投档分数线",
+      "source_type": "official_page",
+      "publisher": "湖南招生考试信息港",
+      "page_url": "https://www.hneeb.cn/hnxxg/741/742/content_4245.html",
+      "attachment_urls": [
+        "https://www.hneeb.cn/hnxxg/741/742/2024072001.xlsx"
+      ],
+      "license_note": "official public page"
+    },
+    {
+      "id": "hunan-2024-specialty-ordinary",
+      "province": "湖南",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "高职专科批投档分数线",
+      "source_type": "official_page",
+      "publisher": "湖南招生考试信息港",
+      "page_url": "https://www.hneeb.cn/hnxxg/741/742/content_4274.html",
+      "attachment_urls": [
+        "https://www.hneeb.cn/hnxxg/741/742/2024081101.xlsx"
+      ],
+      "license_note": "official public page"
+    },
+    {
+      "id": "guangxi-2025-undergraduate-ordinary",
+      "province": "广西",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "本科普通批院校专业组投档最低分数线",
+      "source_type": "official_page",
+      "publisher": "广西招生考试院",
+      "page_url": "https://www.gxeea.cn/view/content_624_31849.htm",
+      "attachment_urls": [],
+      "license_note": "official public page"
+    },
+    {
+      "id": "guangxi-2025-specialty-ordinary",
+      "province": "广西",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "高职高专普通批院校专业组投档最低分数线",
+      "source_type": "official_page",
+      "publisher": "广西招生考试院",
+      "page_url": "https://www.gxeea.cn/view/content_624_32076.htm",
+      "attachment_urls": [],
+      "license_note": "official public page"
+    },
+    {
+      "id": "guangxi-2024-undergraduate-ordinary",
+      "province": "广西",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "本科普通批院校专业组投档最低分数线",
+      "source_type": "official_page",
+      "publisher": "广西招生考试院",
+      "page_url": "https://www.gxeea.cn/view/content_624_30533.htm",
+      "attachment_urls": [],
+      "license_note": "official public page"
+    },
+    {
+      "id": "guangxi-2024-specialty-ordinary",
+      "province": "广西",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "高职高专普通批院校专业组投档最低分数线",
+      "source_type": "official_page",
+      "publisher": "广西招生考试院",
+      "page_url": "https://www.gxeea.cn/view/content_624_30846.htm",
+      "attachment_urls": [],
+      "license_note": "official public page"
+    },
+    {
+      "id": "hainan-2025-undergraduate-ordinary",
+      "province": "海南",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "本科普通批平行志愿院校专业组投档分数线",
+      "source_type": "official_page",
+      "publisher": "海南省考试局",
+      "page_url": "https://ea.hainan.gov.cn/ywdt/ptgkyjszsb/202507/t20250722_3901088.html",
+      "attachment_urls": [],
+      "license_note": "official public page"
+    },
+    {
+      "id": "hainan-2025-specialty-ordinary",
+      "province": "海南",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "高职（专科）批平行志愿院校专业组投档分数线",
+      "source_type": "official_page",
+      "publisher": "海南省考试局",
+      "page_url": "https://ea.hainan.gov.cn/ywdt/ptgkyjszsb/202508/t20250809_3910752.html",
+      "attachment_urls": [],
+      "license_note": "official public page"
+    },
+    {
+      "id": "hainan-2024-undergraduate-ordinary",
+      "province": "海南",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "本科普通批平行志愿院校专业组投档分数线",
+      "source_type": "official_page",
+      "publisher": "海南省考试局",
+      "page_url": "https://ea.hainan.gov.cn/ywdt/ptgkyjszsb/202407/t20240722_3701972.html",
+      "attachment_urls": [],
+      "license_note": "official public page"
+    },
+    {
+      "id": "hainan-2024-specialty-ordinary",
+      "province": "海南",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "高职（专科）批平行志愿院校专业组投档分数线",
+      "source_type": "official_page",
+      "publisher": "海南省考试局",
+      "page_url": "https://ea.hainan.gov.cn/ywdt/ptgkyjszsb/202408/t20240809_3712317.html",
+      "attachment_urls": [],
+      "license_note": "official public page"
+    },
+    {
+      "id": "shaanxi-2024-undergrad-b1",
+      "province": "陕西",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "本科一批",
+      "source_type": "official_admission",
+      "publisher": "陕西招生考试信息网",
+      "page_url": "https://www.sneac.com/info/1019/17838.htm",
+      "attachment_urls": [
+        "https://www.sneac.com/htm/2024/1BZS-WS.html",
+        "https://www.sneac.com/htm/2024/1BZS-LG.html"
+      ],
+      "license_note": "official public page; verify reuse policy before redistribution"
+    },
+    {
+      "id": "shaanxi-2024-undergrad-b2",
+      "province": "陕西",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "本科二批",
+      "source_type": "official_admission",
+      "publisher": "陕西招生考试信息网",
+      "page_url": "https://www.sneac.com/info/1019/17851.htm",
+      "attachment_urls": [
+        "https://www.sneac.com/htm/2024/2024EBZS-WS.html",
+        "https://www.sneac.com/htm/2024/2024EBZS-LG.html"
+      ],
+      "license_note": "official public page; verify reuse policy before redistribution"
+    },
+    {
+      "id": "shaanxi-2024-vocational",
+      "province": "陕西",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "高职（专科）批",
+      "source_type": "official_admission",
+      "publisher": "陕西招生考试信息网",
+      "page_url": "https://www.sneac.com/info/1019/17870.htm",
+      "attachment_urls": [
+        "https://www.sneac.com/htm/2024/2024GZZKZS-WS.html",
+        "https://www.sneac.com/htm/2024/2024GZZKZS-LG.html"
+      ],
+      "license_note": "official public page; verify reuse policy before redistribution"
+    },
+    {
+      "id": "gansu-2024-undergrad-c",
+      "province": "甘肃",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "本科批（C段）",
+      "source_type": "official_admission",
+      "publisher": "甘肃省教育考试院",
+      "page_url": "https://www.ganseea.cn/shouyegonggao/1181.html",
+      "attachment_urls": [
+        "https://www.ganseea.cn/uploads/allimg/20240811/11-240Q1105311438.xls",
+        "https://www.ganseea.cn/uploads/allimg/20240719/11-240G9113416231.xls"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "gansu-2024-vocational-f",
+      "province": "甘肃",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "高职（专科）批（F段）",
+      "source_type": "official_admission",
+      "publisher": "甘肃省教育考试院",
+      "page_url": "https://www.ganseea.cn/shouyegonggao/1198.html",
+      "attachment_urls": [
+        "https://www.ganseea.cn/uploads/allimg/20240808/27-240PQ5223b96.xls",
+        "https://www.ganseea.cn/uploads/allimg/20240808/27-240PQ52250120.xls"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "ningxia-2025-vocational",
+      "province": "宁夏",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "高职（专科）批",
+      "source_type": "official_admission",
+      "publisher": "宁夏教育考试院",
+      "page_url": "https://www.nxjyks.cn/contents/ZXXX/2025/08/20250808193011000.html",
+      "attachment_urls": [
+        "https://www.nxjyks.cn/contents/ZXXX/2025/08/20250808193011000.files/20250808192942586_.pdf"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "xinjiang-2025-undergrad-b1",
+      "province": "新疆",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "本科一批次",
+      "source_type": "official_admission",
+      "publisher": "新疆教育考试院",
+      "page_url": "https://www.xjzk.gov.cn/c/2025-07-25/494639.shtml",
+      "attachment_urls": [
+        "https://www.xjzk.gov.cn/upload/resources/image/2025/07/25/29619.jpg",
+        "https://www.xjzk.gov.cn/upload/resources/image/2025/07/25/29620.jpg",
+        "https://www.xjzk.gov.cn/upload/resources/image/2025/07/25/29623.jpg"
+      ],
+      "license_note": "official public page images; verify reuse policy before redistribution"
+    },
+    {
+      "id": "xinjiang-2025-undergrad-b2",
+      "province": "新疆",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "本科二批次",
+      "source_type": "official_admission",
+      "publisher": "新疆教育考试院",
+      "page_url": "https://www.xjzk.gov.cn/c/2025-08-06/494702.shtml",
+      "attachment_urls": [
+        "https://www.xjzk.gov.cn/upload/resources/image/2025/08/06/29671.png",
+        "https://www.xjzk.gov.cn/upload/resources/image/2025/08/06/29672.png",
+        "https://www.xjzk.gov.cn/upload/resources/image/2025/08/06/29677.png",
+        "https://www.xjzk.gov.cn/upload/resources/image/2025/08/06/29678.png",
+        "https://www.xjzk.gov.cn/upload/resources/image/2025/08/06/29679.png",
+        "https://www.xjzk.gov.cn/upload/resources/image/2025/08/06/29681.png",
+        "https://www.xjzk.gov.cn/upload/resources/image/2025/08/06/29685.png"
+      ],
+      "license_note": "official public page images; verify reuse policy before redistribution"
+    },
+    {
+      "id": "xinjiang-2024-undergrad-b1",
+      "province": "新疆",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "本科一批次",
+      "source_type": "official_admission",
+      "publisher": "新疆教育考试院",
+      "page_url": "https://www.xjzk.gov.cn/c/2024-07-25/493428.shtml",
+      "attachment_urls": [
+        "https://www.xjzk.gov.cn/upload/resources/image/2024/07/25/29000.jpg",
+        "https://www.xjzk.gov.cn/upload/resources/image/2024/07/25/29001.jpg",
+        "https://www.xjzk.gov.cn/upload/resources/image/2024/07/25/29002.jpg",
+        "https://www.xjzk.gov.cn/upload/resources/image/2024/07/25/29003.jpg"
+      ],
+      "license_note": "official public page images; verify reuse policy before redistribution"
+    },
+    {
+      "id": "xinjiang-2024-undergrad-b2",
+      "province": "新疆",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "本科二批次",
+      "source_type": "official_admission",
+      "publisher": "新疆教育考试院",
+      "page_url": "https://www.xjzk.gov.cn/c/2024-08-06/493501.shtml",
+      "attachment_urls": [
+        "https://www.xjzk.gov.cn/upload/resources/image/2024/08/06/29061.jpg",
+        "https://www.xjzk.gov.cn/upload/resources/image/2024/08/06/29062.jpg",
+        "https://www.xjzk.gov.cn/upload/resources/image/2024/08/06/29063.jpg",
+        "https://www.xjzk.gov.cn/upload/resources/image/2024/08/06/29064.jpg"
+      ],
+      "license_note": "official public page images; verify reuse policy before redistribution"
+    },
+    {
+      "id": "xinjiang-2024-vocational",
+      "province": "新疆",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "高职（专科）批次",
+      "source_type": "official_admission",
+      "publisher": "新疆教育考试院",
+      "page_url": "https://www.xjzk.gov.cn/c/2024-08-17/493586.shtml",
+      "attachment_urls": [
+        "https://www.xjzk.gov.cn/upload/resources/image/2024/08/17/29106.jpg",
+        "https://www.xjzk.gov.cn/upload/resources/image/2024/08/17/29107.jpg",
+        "https://www.xjzk.gov.cn/upload/resources/image/2024/08/17/29108.jpg",
+        "https://www.xjzk.gov.cn/upload/resources/image/2024/08/17/29110.jpg",
+        "https://www.xjzk.gov.cn/upload/resources/image/2024/08/17/29111.jpg",
+        "https://www.xjzk.gov.cn/upload/resources/image/2024/08/17/29112.jpg"
+      ],
+      "license_note": "official public page images; verify reuse policy before redistribution"
+    },
+    {
+      "id": "heilongjiang-2025-undergraduate-ordinary",
+      "province": "黑龙江",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "普通本科批平行志愿投档分数线",
+      "source_type": "official_admission",
+      "publisher": "黑龙江省招生考试院",
+      "page_url": "https://www.lzk.hl.cn/gkpd/cjfb/202507/t20250722_19499.htm",
+      "attachment_urls": [
+        "https://www.lzk.hl.cn/gkpd/cjfb/202507/W020250722634336753055.xlsx",
+        "https://www.lzk.hl.cn/gkpd/cjfb/202507/W020250722634336754138.xlsx"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "heilongjiang-2025-specialist-ordinary",
+      "province": "黑龙江",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "普通类高职（专科）批平行志愿投档分数线",
+      "source_type": "official_admission",
+      "publisher": "黑龙江省招生考试院",
+      "page_url": "https://www.lzk.hl.cn/gkpd/cjfb/202508/t20250804_19560.htm",
+      "attachment_urls": [
+        "https://www.lzk.hl.cn/gkpd/cjfb/202508/W020250804653216499611.xlsx",
+        "https://www.lzk.hl.cn/gkpd/cjfb/202508/W020250804653216493580.xlsx"
+      ],
+      "license_note": "official public notice; verify reuse policy before redistribution"
+    },
+    {
+      "id": "beijing-2025-undergraduate-ordinary",
+      "province": "北京",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "本科普通批录取投档线",
+      "source_type": "official_admission",
+      "publisher": "北京教育考试院",
+      "page_url": "https://www.bjeea.cn/html/gkgz/tzgg/2025/0720/87252.html",
+      "attachment_urls": [
+        "https://www.bjeea.cn/uploads/soft/250720/178-250H0201058.pdf"
+      ],
+      "license_note": "official public notice; PDF parser not yet adapted"
+    },
+    {
+      "id": "beijing-2025-specialist-ordinary",
+      "province": "北京",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "专科（高职）普通批录取投档线",
+      "source_type": "official_admission",
+      "publisher": "北京教育考试院",
+      "page_url": "https://www.bjeea.cn/html/gkgz/tzgg/2025/0730/87264.html",
+      "attachment_urls": [
+        "https://www.bjeea.cn/uploads/soft/250730/178-250I01I930.pdf"
+      ],
+      "license_note": "official public notice; PDF parser not yet adapted"
+    },
+    {
+      "id": "beijing-2024-undergraduate-ordinary",
+      "province": "北京",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "本科普通批录取投档线",
+      "source_type": "official_page",
+      "publisher": "北京教育考试院",
+      "page_url": "https://www.bjeea.cn/html/gkgz/tzgg/2024/0720/85632.html",
+      "attachment_urls": [],
+      "license_note": "official public HTML table"
+    },
+    {
+      "id": "beijing-2024-specialist-ordinary",
+      "province": "北京",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "专科普通批录取投档线",
+      "source_type": "official_page",
+      "publisher": "北京教育考试院",
+      "page_url": "https://www.bjeea.cn/html/gkgz/tzgg/2024/0731/85651.html",
+      "attachment_urls": [],
+      "license_note": "official public HTML table"
+    },
+    {
+      "id": "shanxi-2025-undergraduate-ordinary",
+      "province": "山西",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "普通本科批院校专业组投档最低分",
+      "source_type": "official_admission",
+      "publisher": "山西招生考试网",
+      "page_url": "http://www.sxkszx.cn/news/202581/n0402125935.html",
+      "attachment_urls": [
+        "http://www.sxkszx.cn/files/content2025/2025年普通高考院校专业组投档最低分_1历史类.pdf",
+        "http://www.sxkszx.cn/files/content2025/2025年普通高考院校专业组投档最低分_5物理类.pdf"
+      ],
+      "license_note": "official public notice; PDF parser not yet adapted"
+    },
+    {
+      "id": "shanxi-2025-specialist-ordinary",
+      "province": "山西",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "普通专科（高职）批院校专业组投档最低分",
+      "source_type": "official_admission",
+      "publisher": "山西招生考试网",
+      "page_url": "http://www.sxkszx.cn/news/2025820/n9899126962.html",
+      "attachment_urls": [
+        "http://www.sxkszx.cn/files/content2025/2025年普通高考院校专业组投档最低分_专科_1历史类.pdf",
+        "http://www.sxkszx.cn/files/content2025/2025年普通高考院校专业组投档最低分_专科_5物理类.pdf"
+      ],
+      "license_note": "official public notice; PDF parser not yet adapted"
+    },
+    {
+      "id": "shanxi-2024-undergrad-a-wenshi",
+      "province": "山西",
+      "year": 2024,
+      "category": "文史",
+      "batch": "第一批本科A类院校投档最低分",
+      "source_type": "official_page",
+      "publisher": "山西招生考试网",
+      "page_url": "http://www.sxkszx.cn/news/2024724/n6028122480.html",
+      "attachment_urls": [],
+      "license_note": "official public HTML table"
+    },
+    {
+      "id": "shanxi-2024-undergrad-b-wenshi",
+      "province": "山西",
+      "year": 2024,
+      "category": "文史",
+      "batch": "第一批本科B类院校投档最低分",
+      "source_type": "official_page",
+      "publisher": "山西招生考试网",
+      "page_url": "http://www.sxkszx.cn/news/2024728/n6886122488.html",
+      "attachment_urls": [],
+      "license_note": "official public HTML table"
+    },
+    {
+      "id": "shanxi-2024-undergrad-2a-wenshi",
+      "province": "山西",
+      "year": 2024,
+      "category": "文史",
+      "batch": "第二批本科A类院校投档最低分",
+      "source_type": "official_page",
+      "publisher": "山西招生考试网",
+      "page_url": "http://www.sxkszx.cn/news/202483/n0630122496.html",
+      "attachment_urls": [],
+      "license_note": "official public HTML table"
+    },
+    {
+      "id": "shanxi-2024-undergrad-2b-wenshi",
+      "province": "山西",
+      "year": 2024,
+      "category": "文史",
+      "batch": "第二批本科B类院校投档最低分",
+      "source_type": "official_page",
+      "publisher": "山西招生考试网",
+      "page_url": "http://www.sxkszx.cn/news/202486/n4667122502.html",
+      "attachment_urls": [],
+      "license_note": "official public HTML table"
+    },
+    {
+      "id": "shanxi-2024-undergrad-2c-wenshi",
+      "province": "山西",
+      "year": 2024,
+      "category": "文史",
+      "batch": "第二批本科C类院校投档最低分",
+      "source_type": "official_page",
+      "publisher": "山西招生考试网",
+      "page_url": "http://www.sxkszx.cn/news/2024814/n6063122516.html",
+      "attachment_urls": [],
+      "license_note": "official public HTML table"
+    },
+    {
+      "id": "shanxi-2024-undergrad-2c-ligong",
+      "province": "山西",
+      "year": 2024,
+      "category": "理工",
+      "batch": "第二批本科C类院校投档最低分",
+      "source_type": "official_page",
+      "publisher": "山西招生考试网",
+      "page_url": "http://www.sxkszx.cn/news/2024814/n2727122517.html",
+      "attachment_urls": [],
+      "license_note": "official public HTML table"
+    },
+    {
+      "id": "shanxi-2024-specialist-wenshi",
+      "province": "山西",
+      "year": 2024,
+      "category": "文史",
+      "batch": "专科（高职）院校投档最低分",
+      "source_type": "official_page",
+      "publisher": "山西招生考试网",
+      "page_url": "http://www.sxkszx.cn/news/2024826/n7932122552.html",
+      "attachment_urls": [],
+      "license_note": "official public HTML table"
+    },
+    {
+      "id": "shanxi-2024-specialist-ligong",
+      "province": "山西",
+      "year": 2024,
+      "category": "理工",
+      "batch": "专科（高职）院校投档最低分",
+      "source_type": "official_page",
+      "publisher": "山西招生考试网",
+      "page_url": "http://www.sxkszx.cn/news/2024826/n2574122553.html",
+      "attachment_urls": [],
+      "license_note": "official public HTML table"
+    },
+    {
+      "id": "hubei-2025-undergraduate-history",
+      "province": "湖北",
+      "year": 2025,
+      "category": "历史类",
+      "batch": "本科普通批平行志愿投档分数线",
+      "source_type": "official_image_page",
+      "publisher": "湖北省招办/湖北招生信息综合服务平台",
+      "page_url": "https://zsxx.e21.cn/#/MsgDetails?articleColumn=szb&id=3610",
+      "image_api_url": "https://zsxx.e21.cn/hb-zsw-admin/public/news-article/3610",
+      "attachment_urls": [],
+      "license_note": "official public image article; OCR required"
+    },
+    {
+      "id": "hubei-2025-specialty-physics",
+      "province": "湖北",
+      "year": 2025,
+      "category": "物理类",
+      "batch": "高职高专普通批平行志愿投档线",
+      "source_type": "official_image_page",
+      "publisher": "湖北省招办/湖北招生信息综合服务平台",
+      "page_url": "https://zsxx.e21.cn/#/MsgDetails?articleColumn=szb&id=3713",
+      "image_api_url": "https://zsxx.e21.cn/hb-zsw-admin/public/news-article/3713",
+      "attachment_urls": [],
+      "license_note": "official public image article; OCR required"
+    },
+    {
+      "id": "hubei-2024-specialty-ordinary",
+      "province": "湖北",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "高职高专普通批平行志愿投档线（含位次、分类排序）",
+      "source_type": "official_image_page",
+      "publisher": "湖北省招办/湖北招生信息综合服务平台",
+      "page_url": "https://zsxx.e21.cn/#/MsgDetails?articleColumn=szb&id=3701",
+      "image_api_url": "https://zsxx.e21.cn/hb-zsw-admin/public/news-article/3701",
+      "attachment_urls": [],
+      "license_note": "official public image article; OCR required"
+    },
+    {
+      "id": "sichuan-2024-undergrad-b1",
+      "province": "四川",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "本科一批院校调档线",
+      "source_type": "official_image_page",
+      "publisher": "四川省教育考试院",
+      "page_url": "https://www.sceea.cn/Html/202407/Newsdetail_3788.html",
+      "attachment_urls": [],
+      "license_note": "official public image article; OCR required"
+    },
+    {
+      "id": "sichuan-2024-undergrad-b2",
+      "province": "四川",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "本科二批院校调档线",
+      "source_type": "official_image_page",
+      "publisher": "四川省教育考试院",
+      "page_url": "https://www.sceea.cn/Html/202408/Newsdetail_3814.html",
+      "attachment_urls": [],
+      "license_note": "official public image article; OCR required"
+    },
+    {
+      "id": "sichuan-2024-specialist",
+      "province": "四川",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "专科批院校调档线",
+      "source_type": "official_image_page",
+      "publisher": "四川省教育考试院",
+      "page_url": "https://www.sceea.cn/Html/202408/Newsdetail_3844.html",
+      "attachment_urls": [],
+      "license_note": "official public image article; OCR required"
+    },
+    {
+      "id": "fujian-2025-undergrad-physics",
+      "province": "福建",
+      "year": 2025,
+      "category": "物理类",
+      "batch": "普通类本科批常规志愿院校专业组投档最低分",
+      "source_type": "official_image_page",
+      "publisher": "福建省教育考试院",
+      "page_url": "http://www.eeafj.cn/gkptgkgsgg/20250726/14165.html",
+      "attachment_urls": [],
+      "license_note": "official public image article; OCR required"
+    },
+    {
+      "id": "guizhou-2025-undergrad-ordinary",
+      "province": "贵州",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "本科批投档情况",
+      "source_type": "official_admission",
+      "publisher": "贵州省招生考试院",
+      "page_url": "http://zsksy.guizhou.gov.cn/ygpt/tdqk/202507/t20250722_88320425.html",
+      "attachment_urls": [
+        "http://zsksy.guizhou.gov.cn/ygpt/tdqk/202507/P020250722698227709890.pdf",
+        "http://zsksy.guizhou.gov.cn/ygpt/tdqk/202507/P020250723361496543916.pdf"
+      ],
+      "license_note": "official public PDF attachments"
+    },
+    {
+      "id": "guizhou-2025-specialist-ordinary",
+      "province": "贵州",
+      "year": 2025,
+      "category": "普通类",
+      "batch": "高职（专科）批投档情况",
+      "source_type": "official_admission",
+      "publisher": "贵州省招生考试院",
+      "page_url": "http://zsksy.guizhou.gov.cn/ygpt/tdqk/202508/t20250811_88439459.html",
+      "attachment_urls": [
+        "http://zsksy.guizhou.gov.cn/ygpt/tdqk/202508/P020250811355294531458.pdf",
+        "http://zsksy.guizhou.gov.cn/ygpt/tdqk/202508/P020250811355294699801.pdf"
+      ],
+      "license_note": "official public PDF attachments"
+    },
+    {
+      "id": "guizhou-2024-undergrad-ordinary",
+      "province": "贵州",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "本科批投档情况",
+      "source_type": "official_admission",
+      "publisher": "贵州省招生考试院",
+      "page_url": "http://zsksy.guizhou.gov.cn/ygpt/tdqk/202407/t20240723_85148150.html",
+      "attachment_urls": [
+        "http://iip.oss-cn-guiyang-gzdata-d01-a.res.gzdata.com.cn/2024/07/23/W02024072315392024年7月23日贵州省普通高校招生信息表（普通类本科批—物理组合）.pdf",
+        "http://iip.oss-cn-guiyang-gzdata-d01-a.res.gzdata.com.cn/2024/07/23/W02024072315312024年7月23日贵州省普通高校招生信息表（普通类本科批—历史组合）.pdf"
+      ],
+      "license_note": "official public PDF attachments"
+    },
+    {
+      "id": "guizhou-2024-specialist-ordinary",
+      "province": "贵州",
+      "year": 2024,
+      "category": "普通类",
+      "batch": "高职（专科）批投档情况",
+      "source_type": "official_admission",
+      "publisher": "贵州省招生考试院",
+      "page_url": "http://zsksy.guizhou.gov.cn/ygpt/tdqk/202408/t20240813_85383171.html",
+      "attachment_urls": [
+        "http://zsksy.guizhou.gov.cn/ygpt/tdqk/202408/P020240813542768814016.pdf",
+        "http://zsksy.guizhou.gov.cn/ygpt/tdqk/202408/P020240813542769053802.pdf"
+      ],
+      "license_note": "official public PDF attachments"
+    },
+    {
+      "id": "fujian-2025-undergrad-history",
+      "province": "福建",
+      "year": 2025,
+      "category": "历史类",
+      "batch": "普通类本科批常规志愿院校专业组投档最低分",
+      "source_type": "official_image_page",
+      "publisher": "福建省教育考试院",
+      "page_url": "http://www.eeafj.cn/gkptgkgsgg/20250726/14164.html",
+      "attachment_urls": [],
+      "license_note": "official public image article; OCR required"
+    },
+    {
+      "id": "fujian-2024-undergrad-physics",
+      "province": "福建",
+      "year": 2024,
+      "category": "物理类",
+      "batch": "普通类本科批常规志愿院校专业组投档最低分",
+      "source_type": "official_image_page",
+      "publisher": "福建省教育考试院",
+      "page_url": "http://www.eeafj.cn/gkptgkgsgg/20240726/13557.html",
+      "attachment_urls": [],
+      "license_note": "official public image article; OCR required"
+    },
+    {
+      "id": "fujian-2024-undergrad-history",
+      "province": "福建",
+      "year": 2024,
+      "category": "历史类",
+      "batch": "普通类本科批常规志愿院校专业组投档最低分",
+      "source_type": "official_image_page",
+      "publisher": "福建省教育考试院",
+      "page_url": "http://www.eeafj.cn/gkptgkgsgg/20240726/13541.html",
+      "attachment_urls": [],
+      "license_note": "official public image article; OCR required"
+    },
+    {
+      "id": "fujian-2024-specialist-physics",
+      "province": "福建",
+      "year": 2024,
+      "category": "物理类",
+      "batch": "普通类高职（专科）批常规志愿院校专业组投档最低分",
+      "source_type": "official_image_page",
+      "publisher": "福建省教育考试院",
+      "page_url": "http://www.eeafj.cn/gkptgkgsgg/20240819/13650.html",
+      "attachment_urls": [],
+      "license_note": "official public image article; OCR required"
+    },
+    {
+      "id": "fujian-2024-specialist-history",
+      "province": "福建",
+      "year": 2024,
+      "category": "历史类",
+      "batch": "普通类高职（专科）批常规志愿院校专业组投档最低分",
+      "source_type": "official_image_page",
+      "publisher": "福建省教育考试院",
+      "page_url": "http://www.eeafj.cn/gkptgkgsgg/20240819/13649.html",
+      "attachment_urls": [],
+      "license_note": "official public image article; OCR required"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+output/
+raw/
+.vendor/
+.pycache-check/
+*.db
+*.db-shm
+*.db-wal
+__pycache__/

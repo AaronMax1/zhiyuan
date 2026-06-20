@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+APP_DIR="$ROOT_DIR/gaokao-volunteer-app"
+PORT="${PORT:-8000}"
+
+if [[ ! -f "$ROOT_DIR/data-pipeline/output/unified_admission.db" || ! -f "$ROOT_DIR/data-pipeline/output/score_segments.db" ]]; then
+  echo "Runtime databases are missing. Restoring from data-bundles..."
+  "$ROOT_DIR/restore_data.sh"
+fi
+
+echo "Starting Gaokao volunteer app on http://localhost:$PORT"
+cd "$APP_DIR"
+PORT="$PORT" python3 app.py
+

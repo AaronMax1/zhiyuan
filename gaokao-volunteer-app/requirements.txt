@@ -1,0 +1,3 @@
+# The first version only uses the Python standard library.
+# Add LLM/search clients here when the Agent layer is wired in.
+

@@ -1,0 +1,29 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Local dependency/vendor folders
+gaokao-volunteer-app/.vendor/
+data-pipeline/.vendor/
+
+# Runtime databases restored from data-bundles/
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+gaokao-volunteer-app/data/admission_clean.db
+gaokao-volunteer-app/data/admission_clean.db.gz
+data-pipeline/output/
+
+# Raw crawler/OCR/download artifacts are reproducible and too large for git.
+data-pipeline/raw/
+data-pipeline/tmp_*/
+source-snapshots/
+
+# Keep bundled split archive parts.
+!data-bundles/
+!data-bundles/*.part-*
+

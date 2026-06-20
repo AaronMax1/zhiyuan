@@ -1,0 +1,16 @@
+{
+  "schools": [
+    {
+      "school_name": "示例大学",
+      "aliases": ["示例大学主校区"],
+      "summary": "这是示例数据。正式接入时从 cn.colleges.chat 或自建问卷数据中提取摘要，并标注来源。",
+      "dormitory": "示例：四人间，部分楼栋上床下桌。",
+      "campus": "示例：主校区。",
+      "transport": "示例：地铁和公交需以学校页面为准。",
+      "source_url": "https://cn.colleges.chat/",
+      "license": "demo",
+      "confidence": "sample"
+    }
+  ]
+}
+
