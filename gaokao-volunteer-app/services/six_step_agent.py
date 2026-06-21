@@ -56,21 +56,22 @@ class SixStepAgentService:
         recommendation_payload = self.recommend_payload(profile, payload)
         if not recommendation_payload.get("rank") and equivalent_scores.get("rank"):
             recommendation_payload["rank"] = int(equivalent_scores["rank"])
-        if equivalent_scores.get("blocking"):
+        planning_blocked = bool(equivalent_scores.get("blocking") and not recommendation_payload.get("rank"))
+        if planning_blocked:
             recommendation = {
-                "mode": "locked_until_equivalent_score",
+                "mode": "locked_until_rank_or_equivalent_score",
                 "summary": {"total": 0, "chong": 0, "wen": 0, "bao": 0},
                 "recommendations": [],
                 "quality_warnings": [],
-                "explanation": "等位分未计算成功，暂不生成候选池。",
+                "explanation": "缺少用户位次，且等位分未计算成功，暂不生成候选池。",
             }
         else:
             recommendation = self.recommendations.recommend_for_plan(recommendation_payload, equivalent_scores)
         recs = recommendation.get("recommendations", [])
         buckets = self.bucket_recommendations(recs)
         evidence = self.evidence_summary(recs)
-        candidate_pool = self.candidate_pool_summary(recs, evidence, equivalent_scores)
-        strategy = self.strategy_summary(profile, buckets, equivalent_scores)
+        candidate_pool = self.candidate_pool_summary(recs, evidence, equivalent_scores, planning_blocked)
+        strategy = self.strategy_summary(profile, buckets, equivalent_scores, planning_blocked)
         plan = {
             "mode": "six_step_agent_plan",
             "profile": profile,
@@ -79,8 +80,8 @@ class SixStepAgentService:
             "equivalent_scores": equivalent_scores,
             "candidate_pool": candidate_pool,
             "strategy": strategy,
-            "volunteer_order": [] if equivalent_scores.get("blocking") else self.volunteer_order(recs),
-            "charter_checks": [] if equivalent_scores.get("blocking") else self.charter_checks(recs),
+            "volunteer_order": [] if planning_blocked else self.volunteer_order(recs),
+            "charter_checks": [] if planning_blocked else self.charter_checks(recs),
             "recommendation": recommendation,
             "quality_warnings": self.quality_warnings(profile, recommendation, equivalent_scores, batch_control_lines),
         }
@@ -220,7 +221,8 @@ class SixStepAgentService:
         has_score = bool(profile.get("score"))
         eq_status = equivalent_scores.get("status", "missing")
         eq_blocking = bool(equivalent_scores.get("blocking"))
-        downstream_status = "locked" if eq_blocking else None
+        hard_blocking = bool(eq_blocking and not profile.get("rank"))
+        downstream_status = "locked" if hard_blocking else None
         rank_output = {
             "定位方式": "位次" if has_rank else ("分数粗定位" if has_score else "未定位"),
             "用户位次": profile.get("rank") or "",
@@ -269,41 +271,41 @@ class SixStepAgentService:
                 "id": "筛院校",
                 "title": "筛选院校范围",
                 "status": downstream_status or ("done" if recs else "empty"),
-                "summary": "等位分不可用，先不生成候选范围。" if eq_blocking else f"按等位分窗口生成 {len(recs)} 个候选；来源和质量标记保留在每条证据里。",
+                "summary": "缺少位次且等位分不可用，先不生成候选范围。" if hard_blocking else f"按位次主锚点和等位分辅助窗口生成 {len(recs)} 个候选；来源和质量标记保留在每条证据里。",
                 "input": {"score_window": candidate_pool.get("score_window"), "rank_window": candidate_pool.get("rank_window")},
                 "output": pick(candidate_pool, ["total_recommendations", "school_count", "major_count"]),
                 "evidence": candidate_pool.get("top_evidence", []),
-                "blocking_reason": equivalent_scores.get("message") if eq_blocking else "",
+                "blocking_reason": equivalent_scores.get("message") if hard_blocking else "",
             },
             {
                 "id": "冲稳保",
                 "title": "确定冲稳保策略",
                 "status": downstream_status or ("done" if recs else "empty"),
-                "summary": "等位分不可用，冲稳保划分暂不可靠。" if eq_blocking else self.bucket_line(recommendation.get("summary", {})),
+                "summary": "缺少位次且等位分不可用，冲稳保划分暂不可靠。" if hard_blocking else self.bucket_line(recommendation.get("summary", {})),
                 "input": {"risk_model": strategy.get("risk_model")},
                 "output": strategy.get("bucket_counts", {}),
                 "evidence": strategy.get("rules", []),
-                "blocking_reason": equivalent_scores.get("message") if eq_blocking else "",
+                "blocking_reason": equivalent_scores.get("message") if hard_blocking else "",
             },
             {
                 "id": "排序志愿",
                 "title": "排序志愿",
                 "status": downstream_status or ("partial" if recs else "empty"),
-                "summary": "等位分不可用，暂不排序。" if eq_blocking else "已叠加风险、专业、城市、学校层次、来源优先级做效用排序。",
+                "summary": "缺少位次且等位分不可用，暂不排序。" if hard_blocking else "已叠加风险、专业、城市、学校层次、来源优先级做效用排序。",
                 "input": strategy.get("profile_factors", {}),
                 "output": {"ordered_count": len(recs), "top": [r.get("school_name") for r in recs[:5]]},
                 "evidence": strategy.get("sort_weights", []),
-                "blocking_reason": equivalent_scores.get("message") if eq_blocking else "",
+                "blocking_reason": equivalent_scores.get("message") if hard_blocking else "",
             },
             {
                 "id": "章程核验",
                 "title": "检查招生章程",
                 "status": downstream_status or ("pending_web" if recs else "empty"),
-                "summary": "等位分不可用，暂不生成章程核验清单。" if eq_blocking else ("已生成待核验清单；需要联网搜索学校招生章程确认选科、单科、体检、学费、校区。" if recs else "没有候选结果，暂不生成章程核验清单。"),
+                "summary": "缺少位次且等位分不可用，暂不生成章程核验清单。" if hard_blocking else ("已生成待核验清单；需要联网搜索学校招生章程确认选科、单科、体检、学费、校区。" if recs else "没有候选结果，暂不生成章程核验清单。"),
                 "input": {"candidate_count": len(recs)},
                 "output": {"check_count": min(12, len({(r.get("school_name"), r.get("sp_name")) for r in recs}))},
                 "evidence": ["选科要求", "单科成绩", "体检限制", "学费", "校区", "招生章程年份"],
-                "blocking_reason": equivalent_scores.get("message") if eq_blocking else "",
+                "blocking_reason": equivalent_scores.get("message") if hard_blocking else "",
             },
         ]
 
@@ -364,8 +366,9 @@ class SixStepAgentService:
         recs: list[dict[str, Any]],
         evidence: dict[str, Any],
         equivalent_scores: dict[str, Any],
+        planning_blocked: bool = False,
     ) -> dict[str, Any]:
-        if equivalent_scores.get("blocking"):
+        if planning_blocked:
             return {
                 "total_recommendations": 0,
                 "school_count": 0,
@@ -412,12 +415,13 @@ class SixStepAgentService:
         profile: dict[str, Any],
         buckets: dict[str, list[dict[str, Any]]],
         equivalent_scores: dict[str, Any],
+        planning_blocked: bool = False,
     ) -> dict[str, Any]:
-        if equivalent_scores.get("blocking"):
+        if planning_blocked:
             return {
-                "risk_model": "locked_until_equivalent_score",
+                "risk_model": "locked_until_rank_or_equivalent_score",
                 "bucket_counts": {"冲": 0, "稳": 0, "保": 0},
-                "notes": ["等位分没有换算出来，候选池和冲稳保都不能作为有效方案。"],
+                "notes": ["缺少用户位次，且等位分没有换算出来，候选池和冲稳保都不能作为有效方案。"],
                 "profile_factors": {},
             }
         return {

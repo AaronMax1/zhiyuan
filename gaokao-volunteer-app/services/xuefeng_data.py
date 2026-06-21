@@ -333,13 +333,18 @@ class XuefengAdmissionRepository:
 
         score_values = list(eq_by_year.values())
         score_low = max(0, min(score_values) - 60) if score_values else 0
-        score_high = max(score_values) + 35 if score_values else 900
+        score_high = max(score_values) + 35 if score_values else 0
         score_mid = int(sum(score_values) / len(score_values)) if score_values else 0
-        windows = ["(b.score_reliable = 1 AND b.score BETWEEN ? AND ?)"]
-        window_params: list[Any] = [score_low, score_high]
+        windows = []
+        window_params: list[Any] = []
+        if score_values:
+            windows.append("(b.score_reliable = 1 AND b.score BETWEEN ? AND ?)")
+            window_params.extend([score_low, score_high])
         if rank:
             windows.append("(b.rank_reliable = 1 AND b.rank BETWEEN ? AND ?)")
             window_params.extend([max(1, int(rank * 0.70)), int(rank * 1.90)])
+        if not windows:
+            return []
         base += " AND (" + " OR ".join(windows) + ")"
         params.extend(window_params)
 
