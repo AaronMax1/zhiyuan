@@ -255,10 +255,15 @@ pre {
   padding-left: 18px;
 }
 
-.batch-lines {
+.batch-lines,
+.data-scope {
   display: grid;
   gap: 10px;
   margin-top: 12px;
+}
+
+.priority-notes {
+  color: #334155;
 }
 
 .section-title-row {

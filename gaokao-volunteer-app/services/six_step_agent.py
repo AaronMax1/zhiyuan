@@ -9,6 +9,7 @@ leaves score-segment / charter data as explicit pending capabilities.
 from __future__ import annotations
 
 import re
+import sqlite3
 from collections import Counter, defaultdict
 from typing import Any
 
@@ -52,6 +53,7 @@ class SixStepAgentService:
     def build_plan(self, payload: dict[str, Any]) -> dict[str, Any]:
         profile = self.profile_from_payload(payload)
         batch_control_lines = self.build_batch_control_lines(profile)
+        data_scope = self.build_data_scope(profile)
         equivalent_scores = self.build_equivalent_scores(profile)
         recommendation_payload = self.recommend_payload(profile, payload)
         if not recommendation_payload.get("rank") and equivalent_scores.get("rank"):
@@ -75,7 +77,8 @@ class SixStepAgentService:
         plan = {
             "mode": "six_step_agent_plan",
             "profile": profile,
-            "steps": self.build_steps(profile, equivalent_scores, recommendation, recs, candidate_pool, strategy, batch_control_lines),
+            "steps": self.build_steps(profile, equivalent_scores, recommendation, recs, candidate_pool, strategy, batch_control_lines, data_scope),
+            "data_scope": data_scope,
             "batch_control_lines": batch_control_lines,
             "equivalent_scores": equivalent_scores,
             "candidate_pool": candidate_pool,
@@ -83,7 +86,7 @@ class SixStepAgentService:
             "volunteer_order": [] if planning_blocked else self.volunteer_order(recs),
             "charter_checks": [] if planning_blocked else self.charter_checks(recs),
             "recommendation": recommendation,
-            "quality_warnings": self.quality_warnings(profile, recommendation, equivalent_scores, batch_control_lines),
+            "quality_warnings": self.quality_warnings(profile, recommendation, equivalent_scores, batch_control_lines, data_scope),
         }
         if self.charter_repo and plan["charter_checks"]:
             plan["charter_saved"] = self.charter_repo.save_plan_checks(profile, plan["charter_checks"])
@@ -216,6 +219,7 @@ class SixStepAgentService:
         candidate_pool: dict[str, Any],
         strategy: dict[str, Any],
         batch_control_lines: dict[str, Any],
+        data_scope: dict[str, Any],
     ) -> list[dict[str, Any]]:
         has_rank = bool(profile.get("rank"))
         has_score = bool(profile.get("score"))
@@ -229,6 +233,7 @@ class SixStepAgentService:
             "用户分数": profile.get("score") or "",
             "提示": "位次优先，分数只作辅助。" if has_rank else "建议补全省位次；没有位次时用 2025 一分一段按分数换算。",
             "省控线状态": "已匹配" if batch_control_lines.get("lines") else "未匹配",
+            "数据范围": data_scope.get("label", ""),
         }
         eq_rows = equivalent_scores.get("years", [])
         eq_output = {
@@ -317,6 +322,63 @@ class SixStepAgentService:
                 "warnings": ["省控线服务未初始化。"],
             }
         return self.batch_lines.for_profile(profile, year=2025)
+
+    def build_data_scope(self, profile: dict[str, Any]) -> dict[str, Any]:
+        province = str(profile.get("province") or "")
+        scope = {
+            "source_province": province,
+            "target_scope": f"全国院校在{province}招生" if province else "按考生生源地招生",
+            "label": f"{province}考生：全国院校在{province}招生数据" if province else "按考生生源地招生数据",
+            "focus": "hebei_candidate_national_colleges" if province == "河北" else "province_candidate_national_colleges",
+            "rows_by_year": [],
+            "warnings": [],
+        }
+        repo = getattr(self.recommendations, "primary_repo", None)
+        status = getattr(repo, "status", None)
+        if not status or not getattr(status, "ready", False) or getattr(status, "source_kind", "") != "unified":
+            scope["warnings"].append("主录取库未就绪，无法统计生源地招生覆盖。")
+            return scope
+        try:
+            with sqlite3.connect(status.db_path) as conn:
+                conn.row_factory = sqlite3.Row
+                scope["rows_by_year"] = [
+                    dict(row)
+                    for row in conn.execute(
+                        """
+                        SELECT year,
+                               COUNT(*) AS rows,
+                               COUNT(DISTINCT school_name) AS school_count,
+                               COUNT(DISTINCT major_name) AS major_count,
+                               ROUND(100.0 * SUM(rank IS NULL OR rank=0) / COUNT(*), 1) AS missing_rank_pct,
+                               ROUND(100.0 * SUM(quota IS NULL OR quota=0) / COUNT(*), 1) AS missing_quota_pct
+                        FROM admission_best_records
+                        WHERE province=?
+                        GROUP BY year
+                        ORDER BY year DESC
+                        LIMIT 5
+                        """,
+                        (province,),
+                    )
+                ]
+        except Exception as exc:
+            scope["warnings"].append(f"生源地数据覆盖统计失败：{exc}")
+            return scope
+
+        if province == "河北":
+            scope["priorities"] = [
+                "补齐全国高校在河北招生的2025/2024/2023专业最低位次。",
+                "补齐全国高校在河北招生计划：专业、计划数、选科、学费、校区、特殊类型。",
+                "补齐院校基础画像：城市、公办民办、本专科、985/211/双一流/双高、院校类型。",
+                "补齐招生章程结构化字段：选科、单科、体检、外语、转专业、调剂风险。",
+            ]
+            latest = scope["rows_by_year"][0] if scope["rows_by_year"] else {}
+            if latest and float(latest.get("missing_rank_pct") or 0) >= 80:
+                scope["warnings"].append("河北最新录取记录位次缺失较高，当前主要依赖等位分与历史分数窗口。")
+            if latest and float(latest.get("missing_quota_pct") or 0) >= 80:
+                scope["warnings"].append("河北招生计划数缺失较高，暂不能精细判断扩招/缩招风险。")
+        else:
+            scope["warnings"].append("当前产品核心按河北考生优化；其他生源地可用，但数据优先级暂低。")
+        return scope
 
     def build_equivalent_scores(self, profile: dict[str, Any]) -> dict[str, Any]:
         if not self.score_segments:
@@ -504,6 +566,7 @@ class SixStepAgentService:
         recommendation: dict[str, Any],
         equivalent_scores: dict[str, Any],
         batch_control_lines: dict[str, Any],
+        data_scope: dict[str, Any],
     ) -> list[str]:
         warnings = list(recommendation.get("quality_warnings") or [])
         if not profile.get("rank"):
@@ -511,6 +574,7 @@ class SixStepAgentService:
         if equivalent_scores.get("status") != "ok":
             warnings.append(equivalent_scores.get("message", "等位分数据不完整。"))
         warnings.extend(batch_control_lines.get("warnings") or [])
+        warnings.extend(data_scope.get("warnings") or [])
         warnings.append("招生章程核验尚未接入联网工具，最终填报前必须人工核对学校官方章程。")
         return warnings
 

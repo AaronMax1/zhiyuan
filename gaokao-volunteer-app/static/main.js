@@ -366,14 +366,45 @@ function renderRankStep(data) {
   const profile = data.profile || {};
   return `
     ${table([
-    ['省份', profile.province || '-'],
+    ['考生生源地', profile.province || '-'],
+    ['报考数据范围', data.data_scope?.target_scope || '-'],
     ['选科大类', profile.category || '-'],
     ['层次', profile.education_level || '-'],
     ['分数', profile.score || '-'],
     ['位次', profile.rank || '未填写'],
     ['核心诉求', profile.goal || '-'],
     ])}
+    ${renderDataScope(data)}
     ${renderBatchLines(data)}
+  `;
+}
+
+function renderDataScope(data) {
+  const scope = data.data_scope || {};
+  const rows = scope.rows_by_year || [];
+  const body = rows.length ? rows.map(row => `
+    <tr>
+      <td>${escapeHtml(row.year)}</td>
+      <td>${escapeHtml(row.rows)}</td>
+      <td>${escapeHtml(row.school_count)}</td>
+      <td>${escapeHtml(row.major_count)}</td>
+      <td>${escapeHtml(row.missing_rank_pct)}%</td>
+      <td>${escapeHtml(row.missing_quota_pct)}%</td>
+    </tr>
+  `).join('') : '<tr><td colspan="6">暂无覆盖统计</td></tr>';
+  return `
+    <section class="data-scope">
+      <div class="section-title-row">
+        <h4>${escapeHtml(scope.label || '生源地招生数据')}</h4>
+        <span>${escapeHtml(scope.focus === 'hebei_candidate_national_colleges' ? '河北优先' : '通用模式')}</span>
+      </div>
+      <table>
+        <thead><tr><th>年份</th><th>记录</th><th>学校</th><th>专业</th><th>缺位次</th><th>缺计划</th></tr></thead>
+        <tbody>${body}</tbody>
+      </table>
+      ${scope.warnings?.length ? `<ul class="notes">${scope.warnings.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : ''}
+      ${scope.priorities?.length ? `<ul class="notes priority-notes">${scope.priorities.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : ''}
+    </section>
   `;
 }
 
@@ -442,6 +473,7 @@ function renderCandidateStep(data) {
     </div>
     ${pool.score_window ? `<p class="muted">分数窗口：${escapeHtml(pool.score_window.low)}-${escapeHtml(pool.score_window.high)}（${escapeHtml(pool.score_window.rule)}）</p>` : ''}
     ${pool.rank_window ? `<p class="muted">位次窗口：${escapeHtml(pool.rank_window.chong_min)}-${escapeHtml(pool.rank_window.bao_max)}（${escapeHtml(pool.rank_window.rule)}）</p>` : ''}
+    ${data.data_scope?.label ? `<p class="muted">当前候选池范围：${escapeHtml(data.data_scope.label)}。</p>` : ''}
     ${renderAiFilterResult(data)}
     ${renderCandidateTable(rows)}
   `;
