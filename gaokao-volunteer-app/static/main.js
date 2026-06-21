@@ -364,14 +364,17 @@ function activeRecommendations() {
 
 function renderRankStep(data) {
   const profile = data.profile || {};
-  return table([
+  return `
+    ${table([
     ['省份', profile.province || '-'],
     ['选科大类', profile.category || '-'],
     ['层次', profile.education_level || '-'],
     ['分数', profile.score || '-'],
     ['位次', profile.rank || '未填写'],
     ['核心诉求', profile.goal || '-'],
-  ]);
+    ])}
+    ${renderBatchLines(data)}
+  `;
 }
 
 function renderEquivalentStep(data) {
@@ -392,7 +395,35 @@ function renderEquivalentStep(data) {
       <thead><tr><th>年份</th><th>科类</th><th>等位分</th><th>累计位次</th><th>同分人数</th><th>来源</th></tr></thead>
       <tbody>${body}</tbody>
     </table>
+    ${renderBatchLines(data)}
     ${eq.missing_years?.length ? `<p class="warning-line">缺失年份：${eq.missing_years.map(escapeHtml).join('、')}。2025 年优先级最高，需要继续补齐。</p>` : ''}
+  `;
+}
+
+function renderBatchLines(data) {
+  const info = data.batch_control_lines || {};
+  const rows = info.lines || [];
+  const body = rows.length ? rows.map(row => `
+    <tr>
+      <td>${escapeHtml(row.year)}</td>
+      <td>${escapeHtml(row.category)}</td>
+      <td>${escapeHtml(row.line_type)}</td>
+      <td>${escapeHtml(row.score)}</td>
+      <td>${row.source_url ? `<a href="${escapeAttr(row.source_url)}" target="_blank" rel="noreferrer">来源</a>` : '-'}</td>
+    </tr>
+  `).join('') : '<tr><td colspan="5">暂无省控线数据</td></tr>';
+  return `
+    <section class="batch-lines">
+      <div class="section-title-row">
+        <h4>2025 省控线</h4>
+        <span>${escapeHtml(info.ready ? '已接入' : '未就绪')}</span>
+      </div>
+      <table>
+        <thead><tr><th>年份</th><th>科类</th><th>批次线</th><th>分数</th><th>来源</th></tr></thead>
+        <tbody>${body}</tbody>
+      </table>
+      ${info.warnings?.length ? `<ul class="notes">${info.warnings.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : ''}
+    </section>
   `;
 }
 
@@ -679,6 +710,10 @@ function escapeHtml(value) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
+}
+
+function escapeAttr(value) {
+  return escapeHtml(value);
 }
 
 checkHealth();

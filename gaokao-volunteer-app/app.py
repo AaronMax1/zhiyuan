@@ -13,6 +13,7 @@ from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from services.school_life import SchoolLifeRepository, default_life_link
 from services.recommendation_service import RecommendationService
 from services.score_segments import ScoreSegmentRepository
+from services.batch_lines import BatchControlLineRepository
 from services.six_step_agent import SixStepAgentService
 from services.llm_advisor import LLMAdvisorService
 from services.charter_checks import CharterCheckRepository
@@ -48,9 +49,10 @@ class Runtime:
     def __init__(self):
         self.recommendations = RecommendationService(HERE)
         self.score_segments = ScoreSegmentRepository(HERE)
+        self.batch_lines = BatchControlLineRepository(HERE)
         self.llm_advisor = LLMAdvisorService()
         self.charter_checks = CharterCheckRepository(HERE)
-        self.agent = SixStepAgentService(self.recommendations, self.score_segments, self.llm_advisor, self.charter_checks)
+        self.agent = SixStepAgentService(self.recommendations, self.score_segments, self.llm_advisor, self.charter_checks, self.batch_lines)
 
     @property
     def ready(self) -> bool:
@@ -88,6 +90,7 @@ class Handler(SimpleHTTPRequestHandler):
                 "mode": RUNTIME.mode,
                 "init_error": status["optional_engines"]["gaokao_advisor"]["init_error"],
                 "score_segments": RUNTIME.score_segments.coverage(),
+                "batch_control_lines": RUNTIME.batch_lines.coverage(),
                 "llm_advisor": RUNTIME.llm_advisor.status.__dict__,
                 "charter_checks_db": RUNTIME.charter_checks.db_path,
                 **status,
@@ -233,5 +236,6 @@ if __name__ == "__main__":
     print(f"Database: {DATA_PATH} exists={os.path.exists(DATA_PATH)}", flush=True)
     print(f"Unified database: {UNIFIED_DATA_PATH} exists={os.path.exists(UNIFIED_DATA_PATH)}", flush=True)
     print(f"Score segments: {RUNTIME.score_segments.db_path} ready={RUNTIME.score_segments.ready}", flush=True)
+    print(f"Batch control lines: {RUNTIME.batch_lines.db_path} ready={RUNTIME.batch_lines.ready}", flush=True)
     print(f"LLM advisor: ready={RUNTIME.llm_advisor.status.ready} model={RUNTIME.llm_advisor.status.model}", flush=True)
     ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()

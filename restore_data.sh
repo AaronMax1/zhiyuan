@@ -29,5 +29,5 @@ echo "Restored:"
 ls -lh \
   "$ROOT_DIR/data-pipeline/output/unified_admission.db" \
   "$ROOT_DIR/data-pipeline/output/score_segments.db" \
+  "$ROOT_DIR/data-pipeline/output/batch_control_lines.db" \
   "$ROOT_DIR/gaokao-volunteer-app/data/admission_clean.db.gz"
-

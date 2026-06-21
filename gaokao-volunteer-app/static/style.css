@@ -255,6 +255,28 @@ pre {
   padding-left: 18px;
 }
 
+.batch-lines {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.section-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.section-title-row h4 {
+  margin: 0;
+}
+
+.section-title-row span {
+  color: #64748b;
+  font-size: 13px;
+}
+
 .advisor-panel {
   display: grid;
   gap: 8px;

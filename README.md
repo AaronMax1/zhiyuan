@@ -48,6 +48,7 @@ data-bundles/gaokao-runtime-data.tar.zst.part-*
 ```text
 data-pipeline/output/unified_admission.db
 data-pipeline/output/score_segments.db
+data-pipeline/output/batch_control_lines.db
 gaokao-volunteer-app/data/admission_clean.db.gz
 ```
 
@@ -100,4 +101,3 @@ sudo apt-get install zstd
 ## 数据边界
 
 `unified_admission.db` 合并了官方导入、第三方聚合和开源快照清洗数据。推荐结果会保留来源、年份、分数、位次、质量标记和证据等级。最终填报前必须核对学校官方招生章程。
-

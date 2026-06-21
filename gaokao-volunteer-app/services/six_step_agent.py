@@ -27,11 +27,13 @@ class SixStepAgentService:
         score_segments: ScoreSegmentRepository | None = None,
         llm_advisor: Any | None = None,
         charter_repo: Any | None = None,
+        batch_lines: Any | None = None,
     ):
         self.recommendations = recommendations
         self.score_segments = score_segments
         self.llm_advisor = llm_advisor
         self.charter_repo = charter_repo
+        self.batch_lines = batch_lines
 
     def inspect_message(self, payload: dict[str, Any]) -> dict[str, Any]:
         message = str(payload.get("message") or "")
@@ -49,6 +51,7 @@ class SixStepAgentService:
 
     def build_plan(self, payload: dict[str, Any]) -> dict[str, Any]:
         profile = self.profile_from_payload(payload)
+        batch_control_lines = self.build_batch_control_lines(profile)
         equivalent_scores = self.build_equivalent_scores(profile)
         recommendation_payload = self.recommend_payload(profile, payload)
         if not recommendation_payload.get("rank") and equivalent_scores.get("rank"):
@@ -71,14 +74,15 @@ class SixStepAgentService:
         plan = {
             "mode": "six_step_agent_plan",
             "profile": profile,
-            "steps": self.build_steps(profile, equivalent_scores, recommendation, recs, candidate_pool, strategy),
+            "steps": self.build_steps(profile, equivalent_scores, recommendation, recs, candidate_pool, strategy, batch_control_lines),
+            "batch_control_lines": batch_control_lines,
             "equivalent_scores": equivalent_scores,
             "candidate_pool": candidate_pool,
             "strategy": strategy,
             "volunteer_order": [] if equivalent_scores.get("blocking") else self.volunteer_order(recs),
             "charter_checks": [] if equivalent_scores.get("blocking") else self.charter_checks(recs),
             "recommendation": recommendation,
-            "quality_warnings": self.quality_warnings(profile, recommendation, equivalent_scores),
+            "quality_warnings": self.quality_warnings(profile, recommendation, equivalent_scores, batch_control_lines),
         }
         if self.charter_repo and plan["charter_checks"]:
             plan["charter_saved"] = self.charter_repo.save_plan_checks(profile, plan["charter_checks"])
@@ -210,6 +214,7 @@ class SixStepAgentService:
         recs: list[dict[str, Any]],
         candidate_pool: dict[str, Any],
         strategy: dict[str, Any],
+        batch_control_lines: dict[str, Any],
     ) -> list[dict[str, Any]]:
         has_rank = bool(profile.get("rank"))
         has_score = bool(profile.get("score"))
@@ -221,6 +226,7 @@ class SixStepAgentService:
             "用户位次": profile.get("rank") or "",
             "用户分数": profile.get("score") or "",
             "提示": "位次优先，分数只作辅助。" if has_rank else "建议补全省位次；没有位次时用 2025 一分一段按分数换算。",
+            "省控线状态": "已匹配" if batch_control_lines.get("lines") else "未匹配",
         }
         eq_rows = equivalent_scores.get("years", [])
         eq_output = {
@@ -228,6 +234,7 @@ class SixStepAgentService:
             "缺失年份": "、".join(map(str, equivalent_scores.get("missing_years") or [])),
             "目标科类": equivalent_scores.get("category", ""),
             "是否阻断": "是" if eq_blocking else "否",
+            "省控线缺口": "；".join(batch_control_lines.get("warnings") or []) or "无",
         }
         return [
             {
@@ -299,6 +306,15 @@ class SixStepAgentService:
                 "blocking_reason": equivalent_scores.get("message") if eq_blocking else "",
             },
         ]
+
+    def build_batch_control_lines(self, profile: dict[str, Any]) -> dict[str, Any]:
+        if not self.batch_lines:
+            return {
+                "ready": False,
+                "lines": [],
+                "warnings": ["省控线服务未初始化。"],
+            }
+        return self.batch_lines.for_profile(profile, year=2025)
 
     def build_equivalent_scores(self, profile: dict[str, Any]) -> dict[str, Any]:
         if not self.score_segments:
@@ -483,12 +499,14 @@ class SixStepAgentService:
         profile: dict[str, Any],
         recommendation: dict[str, Any],
         equivalent_scores: dict[str, Any],
+        batch_control_lines: dict[str, Any],
     ) -> list[str]:
         warnings = list(recommendation.get("quality_warnings") or [])
         if not profile.get("rank"):
             warnings.append("当前没有用户位次；只用分数会受年份难度影响，建议补全省位次。")
         if equivalent_scores.get("status") != "ok":
             warnings.append(equivalent_scores.get("message", "等位分数据不完整。"))
+        warnings.extend(batch_control_lines.get("warnings") or [])
         warnings.append("招生章程核验尚未接入联网工具，最终填报前必须人工核对学校官方章程。")
         return warnings
 
