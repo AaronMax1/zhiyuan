@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>河北志愿数据库查询</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="query-page">
+  <header class="query-header">
+    <div>
+      <h1>河北志愿数据库查询</h1>
+      <p>查询河北历年录取和 2026 招生计划，历史录取结果会自动补齐可匹配的学费、计划数、学制和选科要求。</p>
+    </div>
+    <a class="secondary-link" href="/">返回六步方案</a>
+  </header>
+
+  <main class="query-shell">
+    <section class="query-filter-section">
+      <form id="data-query-form" class="query-form">
+        <label>数据
+          <select name="source">
+            <option value="history" selected>历年录取 + 学费匹配</option>
+            <option value="plan">2026 招生计划</option>
+          </select>
+        </label>
+        <label>年度
+          <select name="year">
+            <option value="">全部</option>
+            <option value="2025" selected>2025</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+          </select>
+        </label>
+        <label>批次
+          <select name="batch">
+            <option value="">全部</option>
+            <option value="本科批" selected>本科批</option>
+            <option value="专科批">专科批</option>
+          </select>
+        </label>
+        <label>科类
+          <select name="category">
+            <option value="">全部</option>
+            <option value="历史类" selected>历史/文科</option>
+            <option value="物理类">物理/理科</option>
+          </select>
+        </label>
+        <label>院校
+          <input name="school" placeholder="院校名称">
+        </label>
+        <label class="query-filter-wide">省份 / 城市
+          <div id="query-province-options" class="query-chip-options compact"></div>
+          <div id="query-selected-provinces" class="query-selected-chips"></div>
+          <input name="city_text" placeholder="输入城市后回车添加">
+          <div id="query-city-options" class="query-chip-options"></div>
+          <div id="query-selected-cities" class="query-selected-chips"></div>
+        </label>
+        <label class="query-filter-wide">专业
+          <input name="major_text" placeholder="输入专业后回车添加">
+          <div id="query-major-options" class="query-chip-options"></div>
+          <div id="query-selected-majors" class="query-selected-chips"></div>
+        </label>
+        <label>分数从
+          <input name="score_min" inputmode="numeric" placeholder="最低分下限">
+        </label>
+        <label>分数到
+          <input name="score_max" inputmode="numeric" placeholder="最低分上限">
+        </label>
+        <label>位次从
+          <input name="rank_min" inputmode="numeric" placeholder="开始位次">
+        </label>
+        <label>位次到
+          <input name="rank_max" inputmode="numeric" placeholder="结束位次">
+        </label>
+        <label>省控线筛选
+          <select name="line_filter">
+            <option value="">不限制</option>
+            <option value="below_undergrad">低于本科线</option>
+            <option value="near_undergrad">本科线及以下至上浮范围</option>
+            <option value="above_undergrad">高于本科线</option>
+            <option value="below_junior">低于专科线</option>
+            <option value="near_junior">专科线及以下至上浮范围</option>
+            <option value="above_junior">高于专科线</option>
+          </select>
+        </label>
+        <label>线差范围
+          <input name="line_delta" inputmode="numeric" placeholder="上浮分数，例如 30">
+        </label>
+        <label>学费上限
+          <input name="tuition_max" inputmode="numeric" placeholder="例如 8000">
+        </label>
+        <label>每页
+          <select name="page_size">
+            <option value="30" selected>30</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </label>
+        <label>排序
+          <select name="sort">
+            <option value="rank" selected>最低位次</option>
+            <option value="line_diff">线差</option>
+            <option value="min_score">最低分</option>
+            <option value="avg_score">平均分</option>
+            <option value="tuition">学费</option>
+            <option value="plan_count">计划数</option>
+            <option value="year">年度</option>
+          </select>
+        </label>
+        <label>方向
+          <select name="dir">
+            <option value="asc" selected>升序</option>
+            <option value="desc">降序</option>
+          </select>
+        </label>
+        <label class="check-label">
+          <input name="current_plan_only" type="checkbox" value="1" checked>
+          只看 2026 仍招生
+        </label>
+        <label class="check-label">
+          <input name="has_tuition" type="checkbox" value="1">
+          只看有学费的数据
+        </label>
+        <div class="query-actions">
+          <button type="submit">查询</button>
+          <button type="button" id="reset-query" class="secondary-button">重置</button>
+        </div>
+      </form>
+    </section>
+
+    <section>
+      <div class="query-result-head">
+        <div>
+          <h2>查询结果</h2>
+          <p id="query-summary" class="muted">填写条件后查询。</p>
+        </div>
+        <div class="pager-row">
+          <button type="button" id="download-query" class="pager-button download-button">下载全部</button>
+          <button type="button" id="prev-page" class="pager-button">上一页</button>
+          <span id="page-label">第 1 页</span>
+          <button type="button" id="next-page" class="pager-button">下一页</button>
+        </div>
+      </div>
+      <div id="query-notes" class="query-notes"></div>
+      <div class="table-wrap">
+        <table id="query-table" class="query-table">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="/data-query.js"></script>
+</body>
+</html>

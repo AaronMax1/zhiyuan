@@ -53,31 +53,37 @@ class SixStepAgentService:
     def build_plan(self, payload: dict[str, Any]) -> dict[str, Any]:
         profile = self.profile_from_payload(payload)
         batch_control_lines = self.build_batch_control_lines(profile)
+        score_rank_check = self.build_score_rank_check(profile, batch_control_lines)
         data_scope = self.build_data_scope(profile)
         equivalent_scores = self.build_equivalent_scores(profile)
         recommendation_payload = self.recommend_payload(profile, payload)
         if not recommendation_payload.get("rank") and equivalent_scores.get("rank"):
             recommendation_payload["rank"] = int(equivalent_scores["rank"])
-        planning_blocked = bool(equivalent_scores.get("blocking") and not recommendation_payload.get("rank"))
+        score_rank_conflict = bool(score_rank_check.get("blocking"))
+        block_reason = score_rank_check.get("message", "") if score_rank_conflict else equivalent_scores.get("message", "")
+        planning_blocked = score_rank_conflict or bool(equivalent_scores.get("blocking") and not recommendation_payload.get("rank"))
         if planning_blocked:
             recommendation = {
                 "mode": "locked_until_rank_or_equivalent_score",
                 "summary": {"total": 0, "chong": 0, "wen": 0, "bao": 0},
                 "recommendations": [],
                 "quality_warnings": [],
-                "explanation": "缺少用户位次，且等位分未计算成功，暂不生成候选池。",
+                "explanation": block_reason or "定位信息未确认，暂不生成候选池。",
             }
         else:
             recommendation = self.recommendations.recommend_for_plan(recommendation_payload, equivalent_scores)
         recs = recommendation.get("recommendations", [])
+        pool_recs = recommendation.get("candidate_pool_recommendations") or recs
         buckets = self.bucket_recommendations(recs)
-        evidence = self.evidence_summary(recs)
-        candidate_pool = self.candidate_pool_summary(recs, evidence, equivalent_scores, planning_blocked)
-        strategy = self.strategy_summary(profile, buckets, equivalent_scores, planning_blocked)
+        evidence = self.evidence_summary(pool_recs)
+        candidate_pool = self.candidate_pool_summary(pool_recs, evidence, equivalent_scores, planning_blocked, block_reason)
+        candidate_pool["hard_filter"] = recommendation.get("hard_filter", {})
+        strategy = self.strategy_summary(profile, buckets, equivalent_scores, planning_blocked, block_reason)
         plan = {
             "mode": "six_step_agent_plan",
             "profile": profile,
-            "steps": self.build_steps(profile, equivalent_scores, recommendation, recs, candidate_pool, strategy, batch_control_lines, data_scope),
+            "steps": self.build_steps(profile, equivalent_scores, recommendation, recs, candidate_pool, strategy, batch_control_lines, data_scope, score_rank_check),
+            "score_rank_check": score_rank_check,
             "data_scope": data_scope,
             "batch_control_lines": batch_control_lines,
             "equivalent_scores": equivalent_scores,
@@ -86,7 +92,7 @@ class SixStepAgentService:
             "volunteer_order": [] if planning_blocked else self.volunteer_order(recs),
             "charter_checks": [] if planning_blocked else self.charter_checks(recs),
             "recommendation": recommendation,
-            "quality_warnings": self.quality_warnings(profile, recommendation, equivalent_scores, batch_control_lines, data_scope),
+            "quality_warnings": self.quality_warnings(profile, recommendation, equivalent_scores, batch_control_lines, data_scope, score_rank_check),
         }
         if self.charter_repo and plan["charter_checks"]:
             plan["charter_saved"] = self.charter_repo.save_plan_checks(profile, plan["charter_checks"])
@@ -126,6 +132,8 @@ class SixStepAgentService:
             "rank": int(profile.get("rank") or 0),
             "major_keywords": keywords,
             "preferred_cities": profile.get("region") or original.get("preferred_cities") or [],
+            "constraints": profile.get("constraints") or original.get("constraints") or "",
+            "budget": profile.get("budget") or original.get("budget") or "",
             "max_slots": int(original.get("max_slots") or 30),
             "engine_mode": original.get("engine_mode") or "unified",
         }
@@ -220,12 +228,15 @@ class SixStepAgentService:
         strategy: dict[str, Any],
         batch_control_lines: dict[str, Any],
         data_scope: dict[str, Any],
+        score_rank_check: dict[str, Any] | None = None,
     ) -> list[dict[str, Any]]:
         has_rank = bool(profile.get("rank"))
         has_score = bool(profile.get("score"))
         eq_status = equivalent_scores.get("status", "missing")
         eq_blocking = bool(equivalent_scores.get("blocking"))
-        hard_blocking = bool(eq_blocking and not profile.get("rank"))
+        score_rank_conflict = bool((score_rank_check or {}).get("blocking"))
+        block_reason = (score_rank_check or {}).get("message", "") if score_rank_conflict else equivalent_scores.get("message", "")
+        hard_blocking = score_rank_conflict or bool(eq_blocking and not profile.get("rank"))
         downstream_status = "locked" if hard_blocking else None
         rank_output = {
             "定位方式": "位次" if has_rank else ("分数粗定位" if has_score else "未定位"),
@@ -234,15 +245,18 @@ class SixStepAgentService:
             "提示": "位次优先，分数只作辅助。" if has_rank else "建议补全省位次；没有位次时用 2025 一分一段按分数换算。",
             "省控线状态": "已匹配" if batch_control_lines.get("lines") else "未匹配",
             "数据范围": data_scope.get("label", ""),
+            "分数位次校验": (score_rank_check or {}).get("message", ""),
         }
         eq_rows = equivalent_scores.get("years", [])
         eq_output = {
             "可用年份": "、".join(str(row.get("year")) for row in eq_rows) or "",
             "缺失年份": "、".join(map(str, equivalent_scores.get("missing_years") or [])),
             "目标科类": equivalent_scores.get("category", ""),
-            "是否阻断": "是" if eq_blocking else "否",
+            "是否阻断": "是" if hard_blocking else "否",
             "省控线缺口": "；".join(batch_control_lines.get("warnings") or []) or "无",
         }
+        eq_step_status = "blocked" if score_rank_conflict else {"ok": "done", "partial": "partial", "missing": "blocked"}.get(eq_status, "blocked")
+        eq_step_summary = block_reason if score_rank_conflict else equivalent_scores.get("message", "等位分数据不可用。")
         return [
             {
                 "id": "rank定位",
@@ -256,8 +270,8 @@ class SixStepAgentService:
             {
                 "id": "等位分",
                 "title": "换算等位分",
-                "status": {"ok": "done", "partial": "partial", "missing": "blocked"}.get(eq_status, "blocked"),
-                "summary": equivalent_scores.get("message", "等位分数据不可用。"),
+                "status": eq_step_status,
+                "summary": eq_step_summary,
                 "input": {"rank": profile.get("rank"), "score": profile.get("score"), "years": [2025, 2024, 2023]},
                 "output": eq_output,
                 "evidence": [
@@ -270,47 +284,47 @@ class SixStepAgentService:
                     }
                     for row in eq_rows
                 ],
-                "blocking_reason": equivalent_scores.get("message") if eq_blocking else "",
+                "blocking_reason": block_reason if hard_blocking else "",
             },
             {
                 "id": "筛院校",
-                "title": "筛选院校范围",
+                "title": "确认专业与院校范围",
                 "status": downstream_status or ("done" if recs else "empty"),
-                "summary": "缺少位次且等位分不可用，先不生成候选范围。" if hard_blocking else f"按位次主锚点和等位分辅助窗口生成 {len(recs)} 个候选；来源和质量标记保留在每条证据里。",
+                "summary": "定位信息未确认，先不生成候选范围。" if hard_blocking else self.candidate_pool_line(candidate_pool),
                 "input": {"score_window": candidate_pool.get("score_window"), "rank_window": candidate_pool.get("rank_window")},
-                "output": pick(candidate_pool, ["total_recommendations", "school_count", "major_count"]),
+                "output": pick(candidate_pool, ["total_recommendations", "school_count", "major_count", "official_plan_matched", "plan_missing", "hard_filter"]),
                 "evidence": candidate_pool.get("top_evidence", []),
-                "blocking_reason": equivalent_scores.get("message") if hard_blocking else "",
+                "blocking_reason": block_reason if hard_blocking else "",
             },
             {
                 "id": "冲稳保",
                 "title": "确定冲稳保策略",
                 "status": downstream_status or ("done" if recs else "empty"),
-                "summary": "缺少位次且等位分不可用，冲稳保划分暂不可靠。" if hard_blocking else self.bucket_line(recommendation.get("summary", {})),
+                "summary": "定位信息未确认，冲稳保划分暂不可靠。" if hard_blocking else self.bucket_line(recommendation.get("summary", {})),
                 "input": {"risk_model": strategy.get("risk_model")},
-                "output": strategy.get("bucket_counts", {}),
+                "output": {"bucket_counts": strategy.get("bucket_counts", {}), "safety_check": strategy.get("safety_check", {})},
                 "evidence": strategy.get("rules", []),
-                "blocking_reason": equivalent_scores.get("message") if hard_blocking else "",
+                "blocking_reason": block_reason if hard_blocking else "",
             },
             {
                 "id": "排序志愿",
                 "title": "排序志愿",
                 "status": downstream_status or ("partial" if recs else "empty"),
-                "summary": "缺少位次且等位分不可用，暂不排序。" if hard_blocking else "已叠加风险、专业、城市、学校层次、来源优先级做效用排序。",
+                "summary": "定位信息未确认，暂不排序。" if hard_blocking else "已叠加风险、专业、城市、学校层次、来源优先级做效用排序。",
                 "input": strategy.get("profile_factors", {}),
                 "output": {"ordered_count": len(recs), "top": [r.get("school_name") for r in recs[:5]]},
                 "evidence": strategy.get("sort_weights", []),
-                "blocking_reason": equivalent_scores.get("message") if hard_blocking else "",
+                "blocking_reason": block_reason if hard_blocking else "",
             },
             {
                 "id": "章程核验",
                 "title": "检查招生章程",
                 "status": downstream_status or ("pending_web" if recs else "empty"),
-                "summary": "缺少位次且等位分不可用，暂不生成章程核验清单。" if hard_blocking else ("已生成待核验清单；需要联网搜索学校招生章程确认选科、单科、体检、学费、校区。" if recs else "没有候选结果，暂不生成章程核验清单。"),
+                "summary": "定位信息未确认，暂不生成章程核验清单。" if hard_blocking else ("已生成待核验清单；计划数、学费、学制和选科要求优先使用河北2026官方计划，单科/体检/外语/转专业仍需查招生章程。" if recs else "没有候选结果，暂不生成章程核验清单。"),
                 "input": {"candidate_count": len(recs)},
                 "output": {"check_count": min(12, len({(r.get("school_name"), r.get("sp_name")) for r in recs}))},
-                "evidence": ["选科要求", "单科成绩", "体检限制", "学费", "校区", "招生章程年份"],
-                "blocking_reason": equivalent_scores.get("message") if hard_blocking else "",
+                "evidence": ["2026官方计划数", "2026学费/学制", "2026选科要求", "单科成绩", "体检限制", "外语语种", "招生章程年份"],
+                "blocking_reason": block_reason if hard_blocking else "",
             },
         ]
 
@@ -335,47 +349,81 @@ class SixStepAgentService:
         }
         repo = getattr(self.recommendations, "primary_repo", None)
         status = getattr(repo, "status", None)
-        if not status or not getattr(status, "ready", False) or getattr(status, "source_kind", "") != "unified":
+        plan_coverage = repo.hebei_plan_coverage() if repo and hasattr(repo, "hebei_plan_coverage") else {}
+        scope["plan_coverage"] = plan_coverage
+        if not status or not getattr(status, "ready", False):
             scope["warnings"].append("主录取库未就绪，无法统计生源地招生覆盖。")
             return scope
         try:
             with sqlite3.connect(status.db_path) as conn:
                 conn.row_factory = sqlite3.Row
-                scope["rows_by_year"] = [
-                    dict(row)
-                    for row in conn.execute(
-                        """
-                        SELECT year,
-                               COUNT(*) AS rows,
-                               COUNT(DISTINCT school_name) AS school_count,
-                               COUNT(DISTINCT major_name) AS major_count,
-                               ROUND(100.0 * SUM(rank IS NULL OR rank=0) / COUNT(*), 1) AS missing_rank_pct,
-                               ROUND(100.0 * SUM(quota IS NULL OR quota=0) / COUNT(*), 1) AS missing_quota_pct
-                        FROM admission_best_records
-                        WHERE province=?
-                        GROUP BY year
-                        ORDER BY year DESC
-                        LIMIT 5
-                        """,
-                        (province,),
-                    )
-                ]
+                if getattr(status, "source_kind", "") == "hebei_lnwc":
+                    scope["rows_by_year"] = [
+                        dict(row)
+                        for row in conn.execute(
+                            """
+                            SELECT year,
+                                   COUNT(*) AS rows,
+                                   COUNT(DISTINCT school_name) AS school_count,
+                                   COUNT(DISTINCT major_name) AS major_count,
+                                   ROUND(100.0 * SUM(min_rank IS NULL OR min_rank=0) / COUNT(*), 1) AS missing_rank_pct,
+                                   100.0 AS missing_quota_pct
+                            FROM hebei_lnwc_loggedin
+                            GROUP BY year
+                            ORDER BY year DESC
+                            LIMIT 5
+                            """
+                        )
+                    ]
+                    scope["batch_category_counts"] = [
+                        dict(row)
+                        for row in conn.execute(
+                            """
+                            SELECT batch_name, category_name, COUNT(*) AS rows
+                            FROM hebei_lnwc_loggedin
+                            GROUP BY batch_name, category_name
+                            ORDER BY batch_name, category_name
+                            """
+                        )
+                    ]
+                elif getattr(status, "source_kind", "") == "unified":
+                    scope["rows_by_year"] = [
+                        dict(row)
+                        for row in conn.execute(
+                            """
+                            SELECT year,
+                                   COUNT(*) AS rows,
+                                   COUNT(DISTINCT school_name) AS school_count,
+                                   COUNT(DISTINCT major_name) AS major_count,
+                                   ROUND(100.0 * SUM(rank IS NULL OR rank=0) / COUNT(*), 1) AS missing_rank_pct,
+                                   ROUND(100.0 * SUM(quota IS NULL OR quota=0) / COUNT(*), 1) AS missing_quota_pct
+                            FROM admission_best_records
+                            WHERE province=?
+                            GROUP BY year
+                            ORDER BY year DESC
+                            LIMIT 5
+                            """,
+                            (province,),
+                        )
+                    ]
+                else:
+                    scope["warnings"].append("当前主录取库不是河北专项库，无法统计河北专项覆盖。")
         except Exception as exc:
             scope["warnings"].append(f"生源地数据覆盖统计失败：{exc}")
             return scope
 
         if province == "河北":
             scope["priorities"] = [
-                "补齐全国高校在河北招生的2025/2024/2023专业最低位次。",
-                "补齐全国高校在河北招生计划：专业、计划数、选科、学费、校区、特殊类型。",
+                "已优先使用河北考试院历年录取库：全国高校在河北 2025/2024/2023 专业最低分和最低位次。",
+                "已接入河北考试院2026招生计划：普通本科批/专科批、历史/物理，含专业、计划数、选科、学费、学制。",
                 "补齐院校基础画像：城市、公办民办、本专科、985/211/双一流/双高、院校类型。",
                 "补齐招生章程结构化字段：选科、单科、体检、外语、转专业、调剂风险。",
             ]
             latest = scope["rows_by_year"][0] if scope["rows_by_year"] else {}
             if latest and float(latest.get("missing_rank_pct") or 0) >= 80:
                 scope["warnings"].append("河北最新录取记录位次缺失较高，当前主要依赖等位分与历史分数窗口。")
-            if latest and float(latest.get("missing_quota_pct") or 0) >= 80:
-                scope["warnings"].append("河北招生计划数缺失较高，暂不能精细判断扩招/缩招风险。")
+            if not plan_coverage.get("ready"):
+                scope["warnings"].append("当前河北专项库是历年录取库，不含 2026 招生计划数；扩招/缩招风险需结合招生计划册或章程核验。")
         else:
             scope["warnings"].append("当前产品核心按河北考生优化；其他生源地可用，但数据优先级暂低。")
         return scope
@@ -401,6 +449,62 @@ class SixStepAgentService:
             score=int(profile.get("score") or 0) or None,
             years=[2025, 2024, 2023],
         )
+
+    def build_score_rank_check(self, profile: dict[str, Any], batch_control_lines: dict[str, Any] | None = None) -> dict[str, Any]:
+        score = int(profile.get("score") or 0)
+        rank = int(profile.get("rank") or 0)
+        if not score or not rank:
+            return {"status": "not_checked", "message": "分数和位次未同时填写，跳过一致性校验。"}
+        threshold = (batch_control_lines or {}).get("matched_threshold") or {}
+        threshold_score = int(threshold.get("score") or 0)
+        threshold_name = str(threshold.get("line_type") or "")
+        threshold_category = str(threshold.get("category") or profile.get("category") or "")
+        if threshold_score and score < threshold_score:
+            return {
+                "status": "conflict",
+                "blocking": True,
+                "score": score,
+                "provided_rank": rank,
+                "estimated_rank": None,
+                "rank_diff": None,
+                "message": f"分数和报考层次明显不一致：当前分数 {score} 低于{threshold_category}{threshold_name} {threshold_score}，但你填写了 {rank} 位。请先核对分数、位次或报考层次，确认正确后重新生成方案。",
+                "source_year": threshold.get("year"),
+                "source_category": threshold_category,
+            }
+        if not self.score_segments:
+            return {"status": "not_checked", "message": "一分一段服务未初始化，无法校验分数位次。"}
+        row = self.score_segments.score_to_rank(
+            province=profile.get("province", ""),
+            province_id=int(profile.get("province_id") or 0) or None,
+            year=2025,
+            category=profile.get("category", ""),
+            score=score,
+        )
+        if not row:
+            return {"status": "missing", "blocking": False, "message": "未找到 2025 一分一段，无法校验分数位次。"}
+        estimated_rank = int(row.get("cumulative_rank") or 0)
+        diff = rank - estimated_rank
+        ratio = abs(diff) / max(1, estimated_rank)
+        if abs(diff) >= 1000 and ratio >= 0.20:
+            status = "notice"
+            message = f"已优先使用你填写的位次 {rank} 位换算等位分。当前分数 {score} 与 2025 河北一分一段不直接匹配：2025 年 {score} 分约对应 {estimated_rank} 位；这只作为提示，不阻断后续推荐。"
+        elif abs(diff) >= 500:
+            status = "warning"
+            message = f"已优先使用你填写的位次 {rank} 位换算等位分。按 2025 河北一分一段，{score} 分约 {estimated_rank} 位；分数只作提示，不作为推荐锚点。"
+        else:
+            status = "ok"
+            message = f"位次优先：已使用 {rank} 位换算等位分。按 2025 河北一分一段，{score} 分约 {estimated_rank} 位，仅作参考。"
+        return {
+            "status": status,
+            "blocking": False,
+            "score": score,
+            "provided_rank": rank,
+            "estimated_rank": estimated_rank,
+            "rank_diff": diff,
+            "message": message,
+            "source_year": row.get("year"),
+            "source_category": row.get("category"),
+        }
 
     @staticmethod
     def bucket_recommendations(recs: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
@@ -429,6 +533,7 @@ class SixStepAgentService:
         evidence: dict[str, Any],
         equivalent_scores: dict[str, Any],
         planning_blocked: bool = False,
+        block_reason: str = "",
     ) -> dict[str, Any]:
         if planning_blocked:
             return {
@@ -436,7 +541,7 @@ class SixStepAgentService:
                 "school_count": 0,
                 "major_count": 0,
                 "evidence": evidence,
-                "locked_reason": equivalent_scores.get("message", ""),
+                "locked_reason": block_reason or equivalent_scores.get("message", ""),
             }
         school_count = len({r.get("school_name") for r in recs if r.get("school_name")})
         major_count = len({r.get("sp_name") for r in recs if r.get("sp_name")})
@@ -456,6 +561,7 @@ class SixStepAgentService:
             "total_recommendations": len(recs),
             "school_count": school_count,
             "major_count": major_count,
+            **SixStepAgentService.plan_match_summary(recs),
             "evidence": evidence,
             "score_window": score_window,
             "rank_window": rank_window,
@@ -467,9 +573,27 @@ class SixStepAgentService:
                     "score": r.get("source_score"),
                     "rank": r.get("source_rank"),
                     "bucket": r.get("tag"),
+                    "plan_count": r.get("plan_count"),
+                    "tuition": r.get("tuition_text"),
+                    "subject_requirement": r.get("subject_requirement"),
+                    "plan_match_status": r.get("plan_match_status"),
                 }
                 for r in recs[:8]
             ],
+        }
+
+    @staticmethod
+    def plan_match_summary(recs: list[dict[str, Any]]) -> dict[str, Any]:
+        statuses = Counter(str(r.get("plan_match_status") or "missing") for r in recs)
+        official = sum(count for status, count in statuses.items() if status.startswith("official_matched"))
+        missing = sum(count for status, count in statuses.items() if not status.startswith("official_matched") and status != "mock_matched")
+        return {
+            "official_plan_matched": official,
+            "exact_plan_matched": statuses.get("official_matched", 0),
+            "fallback_plan_matched": statuses.get("official_matched_by_school_major_code", 0) + statuses.get("official_matched_by_school_major_name", 0),
+            "mock_plan_matched": statuses.get("mock_matched", 0),
+            "plan_missing": missing,
+            "plan_match_status_counts": dict(statuses),
         }
 
     @staticmethod
@@ -478,34 +602,37 @@ class SixStepAgentService:
         buckets: dict[str, list[dict[str, Any]]],
         equivalent_scores: dict[str, Any],
         planning_blocked: bool = False,
+        block_reason: str = "",
     ) -> dict[str, Any]:
         if planning_blocked:
             return {
                 "risk_model": "locked_until_rank_or_equivalent_score",
                 "bucket_counts": {"冲": 0, "稳": 0, "保": 0},
-                "notes": ["缺少用户位次，且等位分没有换算出来，候选池和冲稳保都不能作为有效方案。"],
+                "notes": [block_reason or "定位信息未确认，候选池和冲稳保都不能作为有效方案。"],
                 "profile_factors": {},
             }
         return {
             "risk_model": "historical_interval",
             "bucket_counts": {key: len(value) for key, value in buckets.items()},
+            "safety_check": SixStepAgentService.safety_check(buckets),
             "rules": [
                 "冲：历史录取位次略优于用户，或历史分数高于等位分 0-20 分。",
                 "稳：历史录取位次与用户基本匹配，或等位分高于历史线 0-30 分。",
                 "保：历史录取位次明显低于用户，或等位分高于历史线 30-70 分。",
             ],
             "sort_weights": [
-                "录取安全：冲/稳/保和位次差",
+                "录取安全：冲/稳/保、位次差和近三年稳定性",
+                "硬条件：选科、学费预算、民办/中外合作等不满足时先剔除",
                 "专业匹配：专业关键词命中",
                 "城市匹配：偏好城市命中",
                 "学校层次：985/211/双一流等标签",
-                "来源质量：官方/聚合/开源优先级",
+                "来源质量：默认使用一志愿，征集志愿不进入主推荐池",
             ],
             "notes": [
                 "冲的学校要确认专业组里没有完全不能接受的专业。",
                 "稳是主力，不要只看学校名，要看专业和城市。",
                 "保底要足够保守，尤其本科/专科临界分数段。",
-            ] + profile_advice(profile),
+            ] + SixStepAgentService.safety_notes(buckets) + profile_advice(profile),
             "profile_factors": {
                 "goal": profile.get("goal", ""),
                 "family": profile.get("family", ""),
@@ -513,6 +640,41 @@ class SixStepAgentService:
                 "major_interest": profile.get("major_interest", []),
             },
         }
+
+    @staticmethod
+    def safety_check(buckets: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
+        bao = buckets.get("保", [])
+        schools = {item.get("school_name") for item in bao if item.get("school_name")}
+        official = [item for item in bao if str(item.get("plan_match_status") or "").startswith("official_matched")]
+        small_plan = [item for item in bao if item.get("plan_count") is not None and int(item.get("plan_count") or 0) <= 2]
+        stable = [item for item in bao if (item.get("stability") or {}).get("years_count", 0) >= 2]
+        status = "adequate"
+        if len(bao) < 3 or len(schools) < 2:
+            status = "thin"
+        elif len(official) < max(1, len(bao) // 2):
+            status = "needs_plan_review"
+        elif len(small_plan) >= max(2, len(bao) // 2):
+            status = "small_plan_risk"
+        return {
+            "status": status,
+            "bao_count": len(bao),
+            "bao_school_count": len(schools),
+            "official_plan_count": len(official),
+            "small_plan_count": len(small_plan),
+            "multi_year_count": len(stable),
+        }
+
+    @staticmethod
+    def safety_notes(buckets: dict[str, list[dict[str, Any]]]) -> list[str]:
+        check = SixStepAgentService.safety_check(buckets)
+        status = check["status"]
+        if status == "thin":
+            return ["保底厚度偏薄：建议至少保留 3-5 个保底专业，并分散到 2 所以上学校。"]
+        if status == "needs_plan_review":
+            return ["保底里仍有较多专业未匹配2026官方计划，最终填表前要优先核对计划数和选科。"]
+        if status == "small_plan_risk":
+            return ["保底里小计划专业偏多，1-2人计划波动较大，建议增加计划数更稳的保底项。"]
+        return ["保底厚度初步可用，但仍要核对专业是否都能接受。"]
 
     @staticmethod
     def volunteer_order(recs: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -532,6 +694,17 @@ class SixStepAgentService:
                     "score_gap": rec.get("score_gap"),
                     "rank_gap": rec.get("rank_gap"),
                     "plan_score": rec.get("plan_score"),
+                    "plan_year": rec.get("plan_year"),
+                    "plan_count": rec.get("plan_count"),
+                    "tuition_text": rec.get("tuition_text"),
+                    "duration": rec.get("duration"),
+                    "campus": rec.get("campus"),
+                    "subject_requirement": rec.get("subject_requirement"),
+                    "plan_match_status": rec.get("plan_match_status"),
+                    "plan_remarks": rec.get("plan_remarks"),
+                    "stability": rec.get("stability"),
+                    "stability_label": rec.get("stability_label"),
+                    "stability_risk": rec.get("stability_risk"),
                     "source": rec.get("source", ""),
                     "evidence_level": rec.get("evidence_level", {}),
                     "reason": build_reason(rec),
@@ -553,8 +726,15 @@ class SixStepAgentService:
                     "school_name": rec.get("school_name", ""),
                     "major_name": rec.get("sp_name", ""),
                     "status": "pending_web_check",
-                    "must_check": ["选科要求", "单科成绩", "体检限制", "学费", "校区", "招生章程年份"],
-                    "source_hint": f"{rec.get('school_name', '')} 本科招生网 招生章程",
+                    "must_check": ["单科成绩", "体检限制", "外语语种", "转专业/调剂", "招生章程年份"],
+                    "known_plan": {
+                        "plan_count": rec.get("plan_count"),
+                        "tuition_text": rec.get("tuition_text"),
+                        "duration": rec.get("duration"),
+                        "subject_requirement": rec.get("subject_requirement"),
+                        "plan_match_status": rec.get("plan_match_status"),
+                    },
+                    "source_hint": f"{rec.get('school_name', '')} 本科招生网 招生章程；计划数/学费/选科优先参考河北考试院2026招生计划。",
                     "search_url": charter_search_url(rec.get("school_name", "")),
                 }
             )
@@ -567,20 +747,39 @@ class SixStepAgentService:
         equivalent_scores: dict[str, Any],
         batch_control_lines: dict[str, Any],
         data_scope: dict[str, Any],
+        score_rank_check: dict[str, Any] | None = None,
     ) -> list[str]:
         warnings = list(recommendation.get("quality_warnings") or [])
+        if score_rank_check and score_rank_check.get("status") in {"conflict", "warning"}:
+            warnings.append(score_rank_check.get("message", "分数位次需要核对。"))
         if not profile.get("rank"):
             warnings.append("当前没有用户位次；只用分数会受年份难度影响，建议补全省位次。")
         if equivalent_scores.get("status") != "ok":
             warnings.append(equivalent_scores.get("message", "等位分数据不完整。"))
         warnings.extend(batch_control_lines.get("warnings") or [])
         warnings.extend(data_scope.get("warnings") or [])
+        plan_coverage = data_scope.get("plan_coverage") or {}
+        if plan_coverage.get("ready"):
+            warnings.append(f"已接入河北考试院2026招生计划库：{plan_coverage.get('official_count') or plan_coverage.get('record_count')} 条官方计划；计划代码与历年录取代码不一致时会按院校名+专业兜底匹配。")
         warnings.append("招生章程核验尚未接入联网工具，最终填报前必须人工核对学校官方章程。")
         return warnings
 
     @staticmethod
     def bucket_line(summary: dict[str, Any]) -> str:
         return f"冲 {summary.get('chong', 0)} 个，稳 {summary.get('wen', 0)} 个，保 {summary.get('bao', 0)} 个。"
+
+    @staticmethod
+    def candidate_pool_line(candidate_pool: dict[str, Any]) -> str:
+        rec_count = int(candidate_pool.get("total_recommendations") or 0)
+        official = int(candidate_pool.get("official_plan_matched") or 0)
+        fallback = int(candidate_pool.get("fallback_plan_matched") or 0)
+        missing = int(candidate_pool.get("plan_missing") or 0)
+        return (
+            f"按位次主锚点和等位分辅助窗口生成 {rec_count} 个候选；"
+            f"其中 {official} 个已匹配河北2026官方招生计划"
+            f"（代码精确 {int(candidate_pool.get('exact_plan_matched') or 0)} 个，院校名+专业兜底 {fallback} 个），"
+            f"{missing} 个仍需最终人工核对计划。"
+        )
 
 
 def build_reason(rec: dict[str, Any]) -> str:
@@ -612,6 +811,7 @@ def profile_advice(profile: dict[str, Any]) -> list[str]:
     goal = str(profile.get("goal") or "")
     majors = " ".join(str(x) for x in profile.get("major_interest") or [])
     family = str(profile.get("family") or "")
+    category = str(profile.get("category") or "")
     advice = []
     if "就业" in goal:
         advice.append("就业优先时，专业和城市产业比单纯学校名更重要。")
@@ -619,8 +819,10 @@ def profile_advice(profile: dict[str, Any]) -> list[str]:
         advice.append("稳定/考公优先时，优先核对法学、财会、汉语言、师范、医学等方向和岗位匹配度。")
     if "深造" in goal:
         advice.append("深造优先时，学校层次、学科平台和保研/考研氛围权重应提高。")
-    if any(word in majors for word in ("计算机", "电子", "电气", "自动化")):
+    if any(word in majors for word in ("计算机", "电子", "电气", "自动化")) and any(word in category for word in ("物理", "理科")):
         advice.append("工科热门专业要重点看专业组内调剂风险、校区和培养方向，避免只看专业大类名称。")
+    if any(word in majors for word in ("计算机", "电子", "电气", "自动化")) and any(word in category for word in ("历史", "文科")):
+        advice.append("历史/文科大类下若候选池没有真正计算机或电子信息类专业，不能按工科就业口径解释电子商务、管理、外语等专业。")
     if any(word in family for word in ("电力", "铁路", "医院", "教师", "体制")):
         advice.append("家庭资源明确时，可以把行业院校和对应专业上调，但仍要保留足够保底。")
     return advice

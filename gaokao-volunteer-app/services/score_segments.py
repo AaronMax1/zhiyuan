@@ -31,7 +31,10 @@ class ScoreSegmentStatus:
 class ScoreSegmentRepository:
     def __init__(self, app_dir: str):
         workspace_dir = os.path.dirname(app_dir)
-        self.db_path = os.path.join(workspace_dir, "data-pipeline", "output", "score_segments.db")
+        output_dir = os.path.join(workspace_dir, "data-pipeline", "output")
+        hebei_path = os.path.join(output_dir, "hebei_score_segments.db")
+        fallback_path = os.path.join(output_dir, "score_segments.db")
+        self.db_path = hebei_path if os.path.exists(hebei_path) else fallback_path
         self.status = self._prepare()
 
     def _prepare(self) -> ScoreSegmentStatus:
@@ -79,14 +82,43 @@ class ScoreSegmentRepository:
                     "SELECT source_type, COUNT(*) AS rows FROM score_segment_best GROUP BY source_type ORDER BY rows DESC"
                 )
             ]
+            hebei = [
+                dict(row)
+                for row in conn.execute(
+                    """
+                    SELECT year, category, COUNT(*) AS rows,
+                           MIN(score_low) AS min_score, MAX(score_high) AS max_score,
+                           MAX(cumulative_rank) AS max_rank
+                    FROM score_segment_best
+                    WHERE province='河北' OR province_id=13
+                    GROUP BY year, category
+                    ORDER BY year DESC, category
+                    """
+                )
+            ]
         return {
             "ready": True,
             "db_path": self.db_path,
             "message": self.status.message,
             "record_count": total,
+            "scope": "河北一分一段优先；其他省份数据当前不参与河北专项推荐主流程。",
+            "hebei_coverage": hebei,
             "recent_years": years,
             "sources": sources,
         }
+
+    def score_to_rank(self, province: str, province_id: int | None, year: int, category: str, score: int) -> dict[str, Any] | None:
+        province_id = province_id or PROVINCE_IDS.get(province)
+        targets = target_categories_for_province(province, category)
+        if not self.ready or not province_id or not targets:
+            return None
+        with sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            for target in targets:
+                row = self._score_to_rank(conn, province_id, year, target, score)
+                if row:
+                    return row
+        return None
 
     def build_equivalent_scores(
         self,

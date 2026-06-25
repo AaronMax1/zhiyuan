@@ -58,6 +58,83 @@ data-pipeline/output/unified_admission_report.json
 
 查询推荐时优先使用 `admission_best_records`；需要审计来源、解释数据可信度或排查异常时查 `normalized_admission_records`。
 
+## 河北登录查询数据
+
+河北考试院信息查询系统的“历年录取情况”需要考生登录态。脚本只从环境变量读取浏览器 cookie，不把 cookie、账号或密码写入代码、数据库或文档。
+
+从浏览器开发者工具复制请求里的 `Cookie`，再运行：
+
+```bash
+HEBEEA_COOKIE='从浏览器复制的 Cookie' \
+python3 data-pipeline/download_hebei_lnwc_loggedin.py \
+  --form-id '从表单数据复制的 id' \
+  --sleep 0.8 \
+  --progress-every 100
+```
+
+默认下载：
+
+- 本科批：物理科目组合、历史科目组合
+- 专科批：物理科目组合、历史科目组合
+
+默认输出：
+
+```text
+data-pipeline/raw/hebei_lnwc_loggedin/
+data-pipeline/output/hebei_lnwc_loggedin.csv
+data-pipeline/output/hebei_lnwc_loggedin.db
+data-pipeline/output/hebei_lnwc_loggedin_report.md
+```
+
+这部分数据单独存放，不默认并入 `unified_admission.db`。后续应用使用时应作为“河北考试院登录查询数据源”独立读取，并在界面或日志中保留独立来源标识。
+
+如果登录态过期，脚本会停止并提示重新复制 `HEBEEA_COOKIE`；已缓存的分页 HTML 会保留，重新运行会复用本地缓存继续处理。
+
+## 河北 2026 招生计划数据
+
+河北考试院信息查询系统的“招生计划”同样需要考生登录态。脚本只抓普通本科批和普通专科批，明确排除提前批；数据单独保存，不并入历年录取库。
+
+从浏览器开发者工具复制 `zsjhIframe` 请求里的 `Cookie`，再运行：
+
+```bash
+HEBEEA_COOKIE='从浏览器复制的 Cookie' \
+python3 data-pipeline/download_hebei_zsjh_loggedin.py \
+  --sleep 0.25 \
+  --progress-every 50
+```
+
+默认下载：
+
+- 本科批：历史科目组合、物理科目组合
+- 专科批：历史科目组合、物理科目组合
+
+默认输出：
+
+```text
+data-pipeline/raw/hebei_zsjh_loggedin/
+data-pipeline/output/hebei_zsjh_loggedin.csv
+data-pipeline/output/hebei_zsjh_loggedin.db
+data-pipeline/output/hebei_2026_plan.db
+```
+
+`hebei_zsjh_loggedin.db` 保留考试院原始招生计划字段；`hebei_2026_plan.db` 是应用运行库，字段对齐服务里的计划信息展示，`is_mock=0` 表示来自考试院官方查询。当前接口科类编码为历史 `0`、物理 `B`。
+
+## 河北专项运行数据
+
+当前应用主流程按“河北考生报全国院校”收敛，运行时只需要两份核心数据库：
+
+```text
+data-pipeline/output/hebei_score_segments.db
+data-pipeline/output/hebei_lnwc_loggedin.db
+data-pipeline/output/hebei_2026_plan.db
+```
+
+- `hebei_score_segments.db`：河北一分一段，用于位次定位和 2025/2024/2023 等位分换算。
+- `hebei_lnwc_loggedin.db`：河北考试院历年录取查询，用于本科/专科、物理/历史的候选院校和专业筛选。
+- `hebei_2026_plan.db`：河北考试院 2026 招生计划库，用于展示计划数、学制、学费、再选科目要求等字段；原始抓取结果保留在 `hebei_zsjh_loggedin.db`。
+
+其他省份录取库、全量一分一段库、第三方聚合库和开源快照库暂不参与河北专项推荐主流程。
+
 ## 下载官方附件
 
 官方源放在 `source_registry.json`，下载脚本会把附件保存到 `raw/official/` 并生成 manifest。

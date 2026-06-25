@@ -128,8 +128,9 @@ def default_life_link(school_name: str) -> str:
 
 def school_slug(school_name: str) -> str:
     text = (school_name or "").strip()
-    text = re.sub(r"[（(]\s*(?:本部|校本部|主校区)\s*[）)]", "", text)
     text = text.replace("（", "(").replace("）", ")")
+    text = re.sub(r"[\[【].*?[\]】]", "", text)
+    text = re.sub(r"\([^)]*\)", "", text)
     if lazy_pinyin:
         tokens = lazy_pinyin(text, errors=lambda chars: list(chars))
     else:

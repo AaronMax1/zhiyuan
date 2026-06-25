@@ -12,37 +12,7 @@
     <form id="form">
       <label>考生生源地
         <select name="province">
-          <option value="北京">北京</option>
-          <option value="天津">天津</option>
           <option value="河北" selected>河北</option>
-          <option value="山西">山西</option>
-          <option value="内蒙古">内蒙古</option>
-          <option value="辽宁">辽宁</option>
-          <option value="吉林">吉林</option>
-          <option value="黑龙江">黑龙江</option>
-          <option value="上海">上海</option>
-          <option value="江苏">江苏</option>
-          <option value="浙江">浙江</option>
-          <option value="安徽">安徽</option>
-          <option value="福建">福建</option>
-          <option value="江西">江西</option>
-          <option value="山东">山东</option>
-          <option value="河南">河南</option>
-          <option value="湖北">湖北</option>
-          <option value="湖南">湖南</option>
-          <option value="广东">广东</option>
-          <option value="广西">广西</option>
-          <option value="海南">海南</option>
-          <option value="重庆">重庆</option>
-          <option value="四川">四川</option>
-          <option value="贵州">贵州</option>
-          <option value="云南">云南</option>
-          <option value="西藏">西藏</option>
-          <option value="陕西">陕西</option>
-          <option value="甘肃">甘肃</option>
-          <option value="青海">青海</option>
-          <option value="宁夏">宁夏</option>
-          <option value="新疆">新疆</option>
         </select>
       </label>
       <label>层次
@@ -70,25 +40,36 @@
           <option value="城市优先">城市优先</option>
         </select>
       </label>
-      <label>专业关键词<input name="major_keywords" value="计算机,电子"></label>
-      <label>目标城市偏好<input name="preferred_cities" value="杭州,南京,上海"></label>
+      <div class="field-block">
+        <label>专业偏好（可选，多选）</label>
+        <p class="field-help">可跳过；也可以打开专业选择页，查看当前文/理科类下全部专业并和 AI 讨论方向。</p>
+        <button type="button" id="open-major-page" class="secondary-button">打开专业选择页</button>
+        <div id="selected-majors" class="selected-majors"></div>
+      </div>
+      <div class="field-block">
+        <label>目标城市偏好（可选，多选）</label>
+        <p class="field-help">可跳过；不选则不限制城市，由第 3 步结合院校、专业和位次统一筛选。</p>
+        <div id="city-options" class="city-options"></div>
+        <div id="selected-cities" class="selected-majors"></div>
+      </div>
       <label>家庭资源<input name="family" placeholder="例如：普通家庭 / 父母在电力系统 / 医疗资源"></label>
-      <label>限制条件<input name="constraints" placeholder="例如：色弱 / 不接受民办 / 学费预算"></label>
+      <label>限制条件<input name="constraints" placeholder="例如：色弱 / 不接受民办 / 不考虑中外合作 / 学费8000以内"></label>
       <label>最大志愿数<input name="max_slots" value="30"></label>
       <label>推荐引擎
         <select name="engine_mode">
-          <option value="unified" selected>统一录取库</option>
+          <option value="hebei" selected>河北专项库</option>
           <option value="advisor">gaokao-advisor 高级引擎</option>
         </select>
       </label>
       <button type="submit">生成方案</button>
+      <a class="secondary-link" href="/data-query.html">打开数据库查询</a>
     </form>
     <section class="llm-config">
       <h2>AI 配置</h2>
       <label>Base URL<input id="llm-base-url" placeholder="在这里填写服务地址"></label>
       <label>Model<input id="llm-model" placeholder="在这里填写模型名称"></label>
       <label>Key<input id="llm-key" type="password" placeholder="只保存在当前浏览器"></label>
-      <label>Timeout 秒<input id="llm-timeout" value="60"></label>
+      <label>Timeout 秒<input id="llm-timeout" value="120"></label>
       <button type="button" id="save-llm">保存 AI 配置</button>
       <p class="muted">Base URL、Model、Key 只保存在浏览器 localStorage，请求时临时发送给后端，不写入代码或数据库。</p>
     </section>

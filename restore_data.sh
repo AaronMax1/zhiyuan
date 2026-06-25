@@ -3,11 +3,10 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BUNDLE_DIR="$ROOT_DIR/data-bundles"
-FIRST_PART="$BUNDLE_DIR/gaokao-runtime-data.tar.zst.part-aa"
-TMP_ARCHIVE="${TMPDIR:-/tmp}/gaokao-runtime-data.tar.zst"
+ARCHIVE="$BUNDLE_DIR/hebei-runtime-data.tar.zst"
 
-if [[ ! -f "$FIRST_PART" ]]; then
-  echo "Missing data bundle parts under: $BUNDLE_DIR" >&2
+if [[ ! -f "$ARCHIVE" ]]; then
+  echo "Missing Hebei runtime data bundle: $ARCHIVE" >&2
   exit 1
 fi
 
@@ -18,16 +17,13 @@ if ! command -v zstd >/dev/null 2>&1; then
   exit 1
 fi
 
-echo "Combining database bundle parts..."
-cat "$BUNDLE_DIR"/gaokao-runtime-data.tar.zst.part-* > "$TMP_ARCHIVE"
-
 echo "Restoring runtime databases..."
 mkdir -p "$ROOT_DIR/data-pipeline/output" "$ROOT_DIR/gaokao-volunteer-app/data"
-zstd -dc "$TMP_ARCHIVE" | tar -xf - -C "$ROOT_DIR"
+zstd -dc "$ARCHIVE" | tar -xf - -C "$ROOT_DIR"
 
 echo "Restored:"
 ls -lh \
-  "$ROOT_DIR/data-pipeline/output/unified_admission.db" \
-  "$ROOT_DIR/data-pipeline/output/score_segments.db" \
-  "$ROOT_DIR/data-pipeline/output/batch_control_lines.db" \
-  "$ROOT_DIR/gaokao-volunteer-app/data/admission_clean.db.gz"
+  "$ROOT_DIR/data-pipeline/output/hebei_lnwc_loggedin.db" \
+  "$ROOT_DIR/data-pipeline/output/hebei_score_segments.db" \
+  "$ROOT_DIR/data-pipeline/output/hebei_2026_plan.db" \
+  "$ROOT_DIR/data-pipeline/output/batch_control_lines.db"

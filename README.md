@@ -27,14 +27,14 @@ chmod +x start.sh restore_data.sh
 http://localhost:8000
 ```
 
-`start.sh` 会检查运行数据库是否存在；如果缺失，会自动从 `data-bundles/` 的分卷压缩包恢复。
+`start.sh` 会检查河北专项运行数据库是否存在；如果缺失，会自动从 `data-bundles/` 的压缩包恢复。
 
 ## 数据包
 
-运行数据库以分卷压缩包形式提交在：
+运行数据库压缩包提交在：
 
 ```text
-data-bundles/gaokao-runtime-data.tar.zst.part-*
+data-bundles/hebei-runtime-data.tar.zst
 ```
 
 恢复命令：
@@ -46,15 +46,15 @@ data-bundles/gaokao-runtime-data.tar.zst.part-*
 恢复后会生成：
 
 ```text
-data-pipeline/output/unified_admission.db
-data-pipeline/output/score_segments.db
+data-pipeline/output/hebei_lnwc_loggedin.db
+data-pipeline/output/hebei_score_segments.db
+data-pipeline/output/hebei_2026_plan.db
 data-pipeline/output/batch_control_lines.db
-gaokao-volunteer-app/data/admission_clean.db.gz
 ```
 
 说明：
 
-- 使用分卷是因为 GitHub 普通仓库单文件限制为 100MB。
+- 当前项目按“河北考生报全国院校”收敛，运行时只依赖河北一分一段和河北考试院历年录取库。
 - 原始下载文件、OCR 切片、临时文件和本地 vendor 依赖不会提交。
 
 ## AI 配置
@@ -100,4 +100,10 @@ sudo apt-get install zstd
 
 ## 数据边界
 
-`unified_admission.db` 合并了官方导入、第三方聚合和开源快照清洗数据。推荐结果会保留来源、年份、分数、位次、质量标记和证据等级。最终填报前必须核对学校官方招生章程。
+当前主流程只服务河北考生：
+
+- `hebei_score_segments.db`：河北一分一段，用于位次定位和等位分换算。
+- `hebei_lnwc_loggedin.db`：河北考试院历年录取查询，用于全国院校在河北的本科/专科、物理/历史候选筛选。
+- `hebei_2026_plan.db`：河北考试院 2026 招生计划库，覆盖本科批/专科批、物理/历史，提供计划数、学制、学费、再选科目要求等字段；原始抓取库单独保留在 `hebei_zsjh_loggedin.db`。
+
+其他省份录取库、全量一分一段库、第三方聚合库和开源快照库暂不参与主推荐流程。最终填报前必须核对学校官方招生章程和 2026 招生计划。

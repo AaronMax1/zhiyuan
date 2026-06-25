@@ -39,7 +39,12 @@ class RecommendationService:
     def status(self) -> dict[str, Any]:
         advisor_ready = self.advisor_orchestrator is not None
         primary_meta = self.primary_repo.data_source_meta()
-        primary_mode = "unified_primary" if primary_meta.get("source_kind") == "unified" else "xuefeng_primary"
+        if primary_meta.get("source_kind") == "hebei_lnwc":
+            primary_mode = "hebei_lnwc_primary"
+        elif primary_meta.get("source_kind") == "unified":
+            primary_mode = "unified_primary"
+        else:
+            primary_mode = "xuefeng_primary"
         return {
             "ready": self.ready,
             "mode": primary_mode if self.primary_repo.ready else ("advisor_only" if advisor_ready else "not_ready"),
@@ -85,8 +90,8 @@ class RecommendationService:
         )
         result["recommendations"] = [self._attach_life(item) for item in result.get("recommendations", [])]
         result["engine"] = {
-            "id": "unified",
-            "name": "unified historical interval recommender",
+            "id": "hebei_lnwc" if self.primary_repo.status.source_kind == "hebei_lnwc" else "unified",
+            "name": "Hebei historical interval recommender" if self.primary_repo.status.source_kind == "hebei_lnwc" else "unified historical interval recommender",
             "advanced": False,
         }
         return result
@@ -106,12 +111,14 @@ class RecommendationService:
             rank=int(payload.get("rank") or 0),
             keywords=payload.get("major_keywords", []),
             preferred_cities=payload.get("preferred_cities", []),
+            constraints=payload.get("constraints", ""),
+            budget=payload.get("budget", ""),
             max_slots=int(payload.get("max_slots", 30)),
         )
         result["recommendations"] = [self._attach_life(item) for item in result.get("recommendations", [])]
         result["engine"] = {
-            "id": "six_step_plan_unified",
-            "name": "equivalent-score six-step planner",
+            "id": "six_step_plan_hebei_lnwc" if self.primary_repo.status.source_kind == "hebei_lnwc" else "six_step_plan_unified",
+            "name": "Hebei equivalent-score six-step planner" if self.primary_repo.status.source_kind == "hebei_lnwc" else "equivalent-score six-step planner",
             "advanced": False,
         }
         return result

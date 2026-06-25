@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>志愿清单排序</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="volunteer-list-page">
+  <header class="query-header">
+    <div>
+      <h1>志愿清单排序</h1>
+      <p>基于已生成的专业优先冲稳保 CSV，删除不想要的项，手动调整顺序后导出新 CSV。</p>
+    </div>
+    <nav class="header-links">
+      <a class="secondary-link" href="/data-query.html">返回数据库查询</a>
+      <a class="secondary-link" href="/">返回六步方案</a>
+    </nav>
+  </header>
+
+  <main class="query-shell volunteer-list-shell">
+    <section class="query-filter-section volunteer-toolbar">
+      <div>
+        <h2>操作</h2>
+        <p id="volunteer-summary" class="muted">正在读取数据...</p>
+      </div>
+      <div class="query-actions volunteer-actions">
+        <button type="button" id="export-volunteer">导出当前清单</button>
+        <button type="button" id="restore-deleted" class="secondary-button">恢复删除</button>
+        <button type="button" id="reset-order" class="secondary-button">恢复初始排序</button>
+      </div>
+      <label>快速筛选
+        <input id="volunteer-search" placeholder="输入院校、专业、冲稳保">
+      </label>
+    </section>
+
+    <section>
+      <div class="query-result-head">
+        <div>
+          <h2>清单</h2>
+          <p class="muted">拖动行可以排序，也可以用上移/下移微调。导出时只包含未删除的数据。</p>
+        </div>
+      </div>
+      <div id="volunteer-error" class="query-notes"></div>
+      <div class="table-wrap volunteer-table-wrap">
+        <table class="query-table volunteer-table">
+          <thead>
+            <tr>
+              <th>顺序</th>
+              <th>操作</th>
+              <th>冲稳保</th>
+              <th>专业权重</th>
+              <th>院校</th>
+              <th>专业</th>
+              <th>2025分/位次</th>
+              <th>位次差</th>
+              <th>三年位次均值</th>
+              <th>学费</th>
+              <th>计划</th>
+              <th>备注</th>
+            </tr>
+          </thead>
+          <tbody id="volunteer-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="/volunteer-list.js"></script>
+</body>
+</html>

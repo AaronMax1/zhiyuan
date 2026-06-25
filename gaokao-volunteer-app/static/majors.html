@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>专业方向选择</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="major-page">
+  <main class="major-shell">
+    <header class="major-header">
+      <div>
+        <h1>专业方向选择</h1>
+        <p>按当前科类和层次查看可选专业，先选出能接受的方向，再回到六步流程生成方案。</p>
+      </div>
+      <a class="secondary-link" href="/">返回生成方案</a>
+    </header>
+
+    <section class="major-toolbar">
+      <label>选科大类
+        <select id="major-category">
+          <option value="理科">理科大类（理科/物理类）</option>
+          <option value="文科">文科大类（文科/历史类）</option>
+          <option value="不限">全部科类</option>
+        </select>
+      </label>
+      <label>层次
+        <select id="major-level">
+          <option value="本科">本科</option>
+          <option value="专科">专科</option>
+          <option value="">不限</option>
+        </select>
+      </label>
+      <label>核心诉求
+        <select id="major-goal">
+          <option value="就业优先">就业优先</option>
+          <option value="稳定/考公优先">稳定/考公优先</option>
+          <option value="深造优先">继续深造优先</option>
+          <option value="学校层次优先">学校层次优先</option>
+          <option value="城市优先">城市优先</option>
+        </select>
+      </label>
+      <label>搜索专业
+        <input id="major-search-page" type="search" placeholder="输入专业名称">
+      </label>
+    </section>
+
+    <section class="major-layout">
+      <section class="major-list-panel">
+        <div class="section-title-row">
+          <h2>全部可选专业</h2>
+          <span id="major-count">加载中</span>
+        </div>
+        <div id="major-page-options" class="major-options full-major-options"></div>
+      </section>
+
+      <aside class="major-side-panel">
+        <section>
+          <div class="section-title-row">
+            <h2>已选专业</h2>
+            <button type="button" id="clear-majors" class="text-button">清空</button>
+          </div>
+          <div id="major-page-selected" class="selected-majors"></div>
+        </section>
+
+        <section class="advisor-panel">
+          <div class="panel-title">
+            <h2>和 AI 聊专业方向</h2>
+            <span>只讨论专业，不排序院校</span>
+          </div>
+          <div id="major-chat-messages" class="chat-messages">
+            <p class="muted">可以问：物理类普通家庭就业优先怎么选？这些专业哪些适合考公？计算机和电子信息怎么取舍？</p>
+          </div>
+          <div class="chat-input-row">
+            <input id="major-chat-input" placeholder="输入你想问的专业方向问题">
+            <button type="button" id="major-chat-send" class="chat-send">发送</button>
+          </div>
+        </section>
+      </aside>
+    </section>
+
+    <section class="major-analysis-panel">
+      <div class="section-title-row">
+        <h2>AI 分析推荐</h2>
+        <span id="major-analysis-scope">按当前科类</span>
+      </div>
+      <div id="major-analysis-content"></div>
+    </section>
+  </main>
+  <script src="/majors.js"></script>
+</body>
+</html>
